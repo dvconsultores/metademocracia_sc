@@ -1,0 +1,27 @@
+50% +1 para votación de proyectos, votaciones para decisiones de asambleas
+y toda votación que no corresponda a elección de gobierno 
+
+Cuando se trate de gobernanza vamos a sistema se mayoría califocada 3/4 partes de los votos, 
+si no se alcanza está votación se hará segunda vuelta con el 50% +1 o mayoría simple
+
+
+
+proposal type:
+name
+id
+
+
+proposal:
+id
+title
+description
+proponents    vec
+Time to complete
+Claims available
+amount
+positive votes
+negative votes
+status
+approval date
+creation date
+sponsor
