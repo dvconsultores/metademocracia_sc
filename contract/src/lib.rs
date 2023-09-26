@@ -16,9 +16,11 @@ pub struct Proposal {
   title: String,
   description: String,
   proposal_type: i64,
-  proponents: Vec<AccountId>,
+  proponent: AccountId,
+  //proponents: Vec<AccountId>,
+  target: Option<AccountId>,
   time_complete: i64,
-  claims_available: u128,
+  //claims_available: u128,
   amount: u128,
   upvote: UnorderedSet<AccountId>,
   downvote: UnorderedSet<AccountId>,
@@ -26,7 +28,7 @@ pub struct Proposal {
   approval_date: Option<String>,
   creation_date: String,
   user_creation: AccountId,
-  sponsor: AccountId,
+  link: String,
 }
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, Clone)]
@@ -35,10 +37,12 @@ pub struct ProposalRequired {
   title: String,
   description: String,
   proposal_type: i64,
-  proponents: Vec<AccountId>,
+  proponent: AccountId,
+  //proponents: Vec<AccountId>,
+  target: Option<AccountId>,
   time_complete: i64,
   amount: u128,
-  sponsor: AccountId,
+  link: String,
 }
 
 
@@ -172,7 +176,9 @@ impl MetaDemocracia {
       title: data.title.clone(),
       description: data.description.clone(),
       proposal_type: data.proposal_type,
-      proponents: data.proponents.clone(),
+      proponent: data.proponent.clone(),
+      //proponents: data.proponents.clone(),
+      target: data.target.clone(),
       time_complete: data.time_complete,
       claims_available: 0,
       amount: data.amount,
@@ -194,7 +200,7 @@ impl MetaDemocracia {
       approval_date: None,
       creation_date: env::block_timestamp().to_string(),
       user_creation: user_creation.clone(),
-      sponsor: data.sponsor.clone(),
+      link: data.sponsor.clone(),
     };
     
     self.proposals.insert(&index, &proposal);
@@ -204,14 +210,16 @@ impl MetaDemocracia {
         "id": index.to_string(),
         "title": data.title,
         "description": data.description,
-        "proponents": data.proponents,
+        "proponent": data.proponent,
+        //"proponents": data.proponents,
+        "target": dta.target,
         "time_complete": data.time_complete,
-        "claims_available": 0,
-        "amount": data.amount,
+        "claims_available": "0",
+        "amount": data.amount.to_string(),
         "status": 1,
         "creation_date": env::block_timestamp().to_string(),
         "user_creation": user_creation,
-        "sponsor": data.sponsor
+        "link": data.sponsor
       }).to_string(),
     );
   }

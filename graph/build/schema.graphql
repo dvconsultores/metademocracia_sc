@@ -1,0 +1,31 @@
+type Proposaltype @entity {
+  id: ID!
+  name: String!
+  proposal: [Proposal!]! @derivedFrom(field: "proposal_type")
+}
+
+type Proposal @entity {
+  id: ID!
+  title: String!
+  description: String!
+  proposal_type: Proposaltype!
+  #proponents: [proponent!]! @derivedFrom(field: "proposal")
+  proponent: String!
+  target: String
+  time_to_complete: Int!
+  Claims_available: BigInt!
+  amount: BigInt!
+  upvote: Int!
+  downvote: Int!
+  status: Int!
+  approval_date: String
+  creation_date: String!
+  user_creation: String!
+  link: String!
+}
+
+#type Proponent @entity {
+#  id: ID!
+#  user_id: String!
+#  proposal: Proposal!
+#}

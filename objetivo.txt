@@ -10,11 +10,15 @@ proposal type:
 name
 id
 
+agregar mienbro
+target
+
 
 proposal:
 id
 title
 description
+target (aquin va el dinero) puede ser null
 proponents    vec
 Time to complete
 Claims available

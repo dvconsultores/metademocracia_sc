@@ -1,0 +1,22 @@
+specVersion: 0.0.4
+schema:
+  file: schema.graphql
+features:
+  - ipfsOnEthereumContracts
+dataSources:
+  - kind: near
+    name: metademocracia
+    network: near-testnet
+    source:
+      account: v6.nearp2p.testnet
+      startBlock: 105441320
+    mapping:
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Proposaltype
+        - Proposal
+        - proponent
+      receiptHandlers:
+        - handler: handleReceipt
+      file: metademocracia\metademocracia.wasm
