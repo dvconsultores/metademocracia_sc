@@ -1,0 +1,1 @@
+/mnt/d/project_rust/meta_democracia/metademocracia_sc/contract/nft/target/wasm32-unknown-unknown/release/meta_democracia.wasm: /mnt/d/project_rust/meta_democracia/metademocracia_sc/contract/nft/src/event.rs /mnt/d/project_rust/meta_democracia/metademocracia_sc/contract/nft/src/lib.rs

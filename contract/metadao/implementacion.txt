@@ -1,0 +1,39 @@
+near delete daov1.metademocracia.testnet metademocracia.testnet
+near create-account daov1.metademocracia.testnet --masterAccount metademocracia.testnet --initialBalance 20
+
+cargo build --target wasm32-unknown-unknown --release
+near deploy --wasmFile target/wasm32-unknown-unknown/release/meta_democracia.wasm --accountId daov1.metademocracia.testnet
+
+
+near call daov1.metademocracia.testnet new '{"owner_id": "daov1.metademocracia.testnet", "policy": ''["hpalencia.testnet", "daov1.metademocracia.testnet", "metademocracia.testnet"]'' }' --accountId daov1.metademocracia.testnet
+
+
+
+near call daov1.metademocracia.testnet set_proposal '{"data": { "title": "primera propuesta", "description": "probando la propuesta de transferencia de fondos", "proponent": "hpalencia.testnet", "kind": { "Transfer": { "token_id": null, "receiver_id": "hpalencia.testnet", "amount": "1000000000000000000000000" } }, "link": "https://link" } }' --accountId daov1.metademocracia.testnet --deposit 1
+
+near call daov1.metademocracia.testnet set_proposal '{"data": "1",  }' --accountId daov1.metademocracia.testnet --deposit 1
+
+
+
+
+
+
+
+------------------------------------------- nft -------------------------------------------------------------------------------- 
+
+near delete nftv1.metademocracia.testnet metademocracia.testnet
+near create-account nftv1.metademocracia.testnet --masterAccount metademocracia.testnet --initialBalance 20
+
+cargo build --target wasm32-unknown-unknown --release
+near deploy --wasmFile target/wasm32-unknown-unknown/release/meta_democracia.wasm --accountId nftv1.metademocracia.testnet
+
+
+near call nftv1.metademocracia.testnet new_default_meta '{"owner_id": "nftv1.metademocracia.testnet", "vault_id": "nftv1.metademocracia.testnet"}' --accountId nftv1.metademocracia.testnet
+
+
+near call nftv1.metademocracia.testnet update_tasa '{"tasa": 2.13}' --accountId nftv1.metademocracia.testnet
+
+near call nftv1.metademocracia.testnet nft_series '{"token_metadata":{"title": "Membresía", "description": "Membresía metademocracia", "media": "https://bafybeicgaadzyolgrb62sn2oexyel4vfluk6st42yq5d5nmbo3e4ltu7i4.ipfs.w3s.link/Capture.PNG", "reference": "1"}, "price": 1, "royalty":{"daov1.metademocracia.testnet": 1000} }' --accountId nftv1.metademocracia.testnet --depositYocto 10910000000000000000000
+
+near call nftv1.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "hpalencia.testnet"}' --accountId nftv1.metademocracia.testnet --depositYocto 8470000000000000000000
+

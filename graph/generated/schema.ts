@@ -11,56 +11,6 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class Proposaltype extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Proposaltype entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Proposaltype must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("Proposaltype", id.toString(), this);
-    }
-  }
-
-  static load(id: string): Proposaltype | null {
-    return changetype<Proposaltype | null>(store.get("Proposaltype", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get name(): string {
-    let value = this.get("name");
-    return value!.toString();
-  }
-
-  set name(value: string) {
-    this.set("name", Value.fromString(value));
-  }
-
-  get proposal(): Array<string> {
-    let value = this.get("proposal");
-    return value!.toStringArray();
-  }
-
-  set proposal(value: Array<string>) {
-    this.set("proposal", Value.fromStringArray(value));
-  }
-}
-
 export class Proposal extends Entity {
   constructor(id: string) {
     super();
@@ -119,84 +69,58 @@ export class Proposal extends Entity {
     this.set("proposal_type", Value.fromString(value));
   }
 
-  get proponent(): string {
-    let value = this.get("proponent");
+  get kind(): string {
+    let value = this.get("kind");
     return value!.toString();
   }
 
-  set proponent(value: string) {
-    this.set("proponent", Value.fromString(value));
+  set kind(value: string) {
+    this.set("kind", Value.fromString(value));
   }
 
-  get target(): string | null {
-    let value = this.get("target");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+  get proposer(): string {
+    let value = this.get("proposer");
+    return value!.toString();
   }
 
-  set target(value: string | null) {
-    if (!value) {
-      this.unset("target");
-    } else {
-      this.set("target", Value.fromString(<string>value));
-    }
+  set proposer(value: string) {
+    this.set("proposer", Value.fromString(value));
   }
 
-  get time_to_complete(): i32 {
-    let value = this.get("time_to_complete");
-    return value!.toI32();
-  }
-
-  set time_to_complete(value: i32) {
-    this.set("time_to_complete", Value.fromI32(value));
-  }
-
-  get Claims_available(): BigInt {
-    let value = this.get("Claims_available");
+  get submission_time(): BigInt {
+    let value = this.get("submission_time");
     return value!.toBigInt();
   }
 
-  set Claims_available(value: BigInt) {
-    this.set("Claims_available", Value.fromBigInt(value));
+  set submission_time(value: BigInt) {
+    this.set("submission_time", Value.fromBigInt(value));
   }
 
-  get amount(): BigInt {
-    let value = this.get("amount");
-    return value!.toBigInt();
-  }
-
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
-  }
-
-  get upvote(): i32 {
+  get upvote(): BigInt {
     let value = this.get("upvote");
-    return value!.toI32();
+    return value!.toBigInt();
   }
 
-  set upvote(value: i32) {
-    this.set("upvote", Value.fromI32(value));
+  set upvote(value: BigInt) {
+    this.set("upvote", Value.fromBigInt(value));
   }
 
-  get downvote(): i32 {
+  get downvote(): BigInt {
     let value = this.get("downvote");
-    return value!.toI32();
+    return value!.toBigInt();
   }
 
-  set downvote(value: i32) {
-    this.set("downvote", Value.fromI32(value));
+  set downvote(value: BigInt) {
+    this.set("downvote", Value.fromBigInt(value));
   }
 
-  get status(): i32 {
+  get status(): string {
     let value = this.get("status");
-    return value!.toI32();
+    return value!.toString();
   }
 
-  set status(value: i32) {
-    this.set("status", Value.fromI32(value));
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
   }
 
   get approval_date(): string | null {
@@ -241,5 +165,262 @@ export class Proposal extends Entity {
 
   set link(value: string) {
     this.set("link", Value.fromString(value));
+  }
+}
+
+export class Serie extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Serie entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Serie must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Serie", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Serie | null {
+    return changetype<Serie | null>(store.get("Serie", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get title(): string {
+    let value = this.get("title");
+    return value!.toString();
+  }
+
+  set title(value: string) {
+    this.set("title", Value.fromString(value));
+  }
+
+  get description(): string | null {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
+  }
+
+  get media(): string {
+    let value = this.get("media");
+    return value!.toString();
+  }
+
+  set media(value: string) {
+    this.set("media", Value.fromString(value));
+  }
+
+  get extra(): string | null {
+    let value = this.get("extra");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set extra(value: string | null) {
+    if (!value) {
+      this.unset("extra");
+    } else {
+      this.set("extra", Value.fromString(<string>value));
+    }
+  }
+
+  get reference(): string {
+    let value = this.get("reference");
+    return value!.toString();
+  }
+
+  set reference(value: string) {
+    this.set("reference", Value.fromString(value));
+  }
+
+  get creator_id(): string {
+    let value = this.get("creator_id");
+    return value!.toString();
+  }
+
+  set creator_id(value: string) {
+    this.set("creator_id", Value.fromString(value));
+  }
+
+  get price(): BigDecimal | null {
+    let value = this.get("price");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set price(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("price");
+    } else {
+      this.set("price", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get price_near(): BigDecimal | null {
+    let value = this.get("price_near");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
+  }
+
+  set price_near(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("price_near");
+    } else {
+      this.set("price_near", Value.fromBigDecimal(<BigDecimal>value));
+    }
+  }
+
+  get supply(): BigInt {
+    let value = this.get("supply");
+    return value!.toBigInt();
+  }
+
+  set supply(value: BigInt) {
+    this.set("supply", Value.fromBigInt(value));
+  }
+
+  get copies(): BigInt | null {
+    let value = this.get("copies");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set copies(value: BigInt | null) {
+    if (!value) {
+      this.unset("copies");
+    } else {
+      this.set("copies", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get fecha(): BigInt {
+    let value = this.get("fecha");
+    return value!.toBigInt();
+  }
+
+  set fecha(value: BigInt) {
+    this.set("fecha", Value.fromBigInt(value));
+  }
+
+  get tokens(): Array<string> {
+    let value = this.get("tokens");
+    return value!.toStringArray();
+  }
+
+  set tokens(value: Array<string>) {
+    this.set("tokens", Value.fromStringArray(value));
+  }
+}
+
+export class Nft extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Nft entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Nft must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Nft", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Nft | null {
+    return changetype<Nft | null>(store.get("Nft", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get serie_id(): string {
+    let value = this.get("serie_id");
+    return value!.toString();
+  }
+
+  set serie_id(value: string) {
+    this.set("serie_id", Value.fromString(value));
+  }
+
+  get owner_id(): string {
+    let value = this.get("owner_id");
+    return value!.toString();
+  }
+
+  set owner_id(value: string) {
+    this.set("owner_id", Value.fromString(value));
+  }
+
+  get fecha(): BigInt {
+    let value = this.get("fecha");
+    return value!.toBigInt();
+  }
+
+  set fecha(value: BigInt) {
+    this.set("fecha", Value.fromBigInt(value));
+  }
+
+  get is_visible(): boolean {
+    let value = this.get("is_visible");
+    return value!.toBoolean();
+  }
+
+  set is_visible(value: boolean) {
+    this.set("is_visible", Value.fromBoolean(value));
+  }
+
+  get metadata(): string {
+    let value = this.get("metadata");
+    return value!.toString();
+  }
+
+  set metadata(value: string) {
+    this.set("metadata", Value.fromString(value));
   }
 }

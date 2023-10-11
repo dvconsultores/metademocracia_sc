@@ -1,31 +1,41 @@
-type Proposaltype @entity {
-  id: ID!
-  name: String!
-  proposal: [Proposal!]! @derivedFrom(field: "proposal_type")
-}
-
 type Proposal @entity {
   id: ID!
   title: String!
   description: String!
-  proposal_type: Proposaltype!
-  #proponents: [proponent!]! @derivedFrom(field: "proposal")
-  proponent: String!
-  target: String
-  time_to_complete: Int!
-  Claims_available: BigInt!
-  amount: BigInt!
-  upvote: Int!
-  downvote: Int!
-  status: Int!
+  proposal_type: String!
+  kind: String!
+  proposer: String!
+  submission_time: BigInt!
+  upvote: BigInt!
+  downvote: BigInt!
+  status: String!
   approval_date: String
   creation_date: String!
   user_creation: String!
   link: String!
 }
 
-#type Proponent @entity {
-#  id: ID!
-#  user_id: String!
-#  proposal: Proposal!
-#}
+type Serie @entity {
+  id: ID!
+  title: String!
+  description: String
+  media: String!
+  extra: String
+  reference: String!
+  creator_id: String!
+  price: BigDecimal
+  price_near: BigDecimal
+  supply: BigInt!
+  copies: BigInt
+  fecha: BigInt!
+  tokens: [Nft!]! @derivedFrom(field: "metadata")
+}
+
+type Nft @entity {
+  id: ID!
+  serie_id: String!
+  owner_id: String!
+  fecha: BigInt!
+  is_visible: Boolean!
+  metadata: Serie!
+}

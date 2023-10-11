@@ -8,15 +8,28 @@ dataSources:
     name: metademocracia
     network: near-testnet
     source:
-      account: "v6.nearp2p.testnet"
-      startBlock: 105441320
+      account: "daov1.metademocracia.testnet"
+      startBlock: 140522861
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Proposaltype
         - Proposal
-        - proponent
       receiptHandlers:
         - handler: handleReceipt
       file: ./src/mapping_1.ts
+  - kind: near
+    name: metademocracia-nft
+    network: near-testnet
+    source:
+      account: "nftv1.metademocracia.testnet"
+      startBlock: 141179283
+    mapping:
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Serie
+        - Nft
+      receiptHandlers:
+        - handler: handleReceipt
+      file: ./src/mapping_2.ts
