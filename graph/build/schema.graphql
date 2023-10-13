@@ -1,3 +1,9 @@
+type Proposaldata @entity {
+  id: ID!
+  proposal_actives: BigInt!
+  proposal_total: BigInt!
+}
+
 type Proposal @entity {
   id: ID!
   title: String!
@@ -8,12 +14,43 @@ type Proposal @entity {
   submission_time: BigInt!
   upvote: BigInt!
   downvote: BigInt!
+  vote: [Vote!]! @derivedFrom(field: "proposal")
   status: String!
   approval_date: String
-  creation_date: String!
+  creation_date: BigInt!
   user_creation: String!
   link: String!
 }
+
+type Vote @entity {
+  id: ID!
+  proposal: Proposal!
+  user_id: String!
+  vote: String!
+}
+
+type Delegation @entity {
+  id: ID!
+  delegators: [Delegator!]! @derivedFrom(field: "delegation")
+  history: [Delegationhist!]! @derivedFrom(field: "delegation")
+  total_amount: BigInt!
+}
+
+type Delegationhist @entity {
+  id: ID!
+  delegation: Delegation!
+  date_time: BigInt!
+  delegator: String!
+  amount: BigInt!
+}
+
+type Delegator @entity {
+  id: ID!
+  delegation: Delegation!
+  delegator: String!
+  amount: BigInt!
+}
+
 
 type Serie @entity {
   id: ID!

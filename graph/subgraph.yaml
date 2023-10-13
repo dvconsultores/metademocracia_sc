@@ -8,13 +8,16 @@ dataSources:
     name: metademocracia
     network: near-testnet
     source:
-      account: "daov1.metademocracia.testnet"
-      startBlock: 140522861
+      account: "daov4.metademocracia.testnet"
+      startBlock: 141505771
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
+        - Proposaldata
         - Proposal
+        - Vote
+        - Delegation
       receiptHandlers:
         - handler: handleReceipt
       file: ./src/mapping_1.ts
@@ -22,8 +25,8 @@ dataSources:
     name: metademocracia-nft
     network: near-testnet
     source:
-      account: "nftv1.metademocracia.testnet"
-      startBlock: 141179283
+      account: "nftv2.metademocracia.testnet"
+      startBlock: 141306532
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript

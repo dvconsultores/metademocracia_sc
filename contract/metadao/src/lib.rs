@@ -23,12 +23,24 @@ mod views;
 pub const ONE_YOCTO_NEAR: Balance = 1;
 
 pub const GAS_FOR_FT_TRANSFER: Gas = Gas(10_000_000_000_000);
+pub const BASE_GAS: Gas = Gas(3_000_000_000_000);
+
+pub const CONTRACT_NFT: &str = "nftv2.metademocracia.testnet";
 
 
 #[ext_contract(ext_self)]
 pub trait ExtSelf {
     /// Callback after proposal execution.
     fn on_proposal_callback(&mut self, proposal_id: u128) -> PromiseOrValue<()>;
+
+    fn on_set_proposal(&mut self, data: ProposalImput) -> u128;
+
+    fn on_update_proposal(&mut self, id: u128, action: Action, memo: Option<String>);
+}
+
+#[ext_contract(ext_contract_nft)]
+pub trait ExtContractNftt {
+    fn is_member(self, account_id: AccountId) -> U128;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

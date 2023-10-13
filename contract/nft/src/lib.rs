@@ -995,6 +995,15 @@ impl Contract {
             .unwrap_or(U128(0))
     }
 
+    pub fn is_member(self, account_id: AccountId) -> U128 {
+        let tokens_per_owner = self.tokens.tokens_per_owner.expect(
+            "Could not find tokens_per_owner when calling a method on the enumeration standard.",
+        );
+        tokens_per_owner.get(&account_id).expect("account not member");
+
+        (self.tokens.owner_by_id.len() as u128).into()
+    }
+
     pub fn nft_tokens_for_owner(
         &self,
         account_id: AccountId,
