@@ -16,7 +16,7 @@ type Proposal @entity {
   downvote: BigInt!
   vote: [Vote!]! @derivedFrom(field: "proposal")
   status: String!
-  approval_date: String
+  approval_date: BigInt
   creation_date: BigInt!
   user_creation: String!
   link: String!
@@ -27,6 +27,7 @@ type Vote @entity {
   proposal: Proposal!
   user_id: String!
   vote: String!
+  date_time: BigInt!
 }
 
 type Delegation @entity {

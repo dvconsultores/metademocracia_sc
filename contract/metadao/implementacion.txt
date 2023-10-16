@@ -24,6 +24,10 @@ near call daov4.metademocracia.testnet set_proposal '{"data": { "title": "propue
 
 near call daov4.metademocracia.testnet update_proposal '{"id": 1, "action": "VoteApprove"}' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
 
+near view daov4.metademocracia.testnet get_locked_storage_amount
+
+near view daov4.metademocracia.testnet get_locked_amount
+
 
 
 
@@ -45,7 +49,28 @@ near call nftv2.metademocracia.testnet nft_series '{"token_metadata":{"title": "
 
 near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "hpalencia.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 8470000000000000000000
 
-near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "pruaab.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 8490000000000000000000
+near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "pruaab.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 9490000000000000000000
+
+near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "5d18671d5948cd3348ff4fe4578518ed25a77ee73d18e4ee2b21b335d1585df7"}' --accountId nftv2.metademocracia.testnet --depositYocto 9490000000000000000000
+
+near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "metademocracia2023.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 9490000000000000000000
+
+near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "pruebas42.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 9490000000000000000000
+
+near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "prueba88.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 9490000000000000000000
+
+near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "prueba89.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 9490000000000000000000
+
+near call nftv2.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "daov4.metademocracia.testnet"}' --accountId nftv2.metademocracia.testnet --depositYocto 9490000000000000000000
+
+
+
 
 near view nftv2.metademocracia.testnet is_member '{"account_id": "hpalencia.testnet"}'
+
+near view nftv2.metademocracia.testnet is_member '{"account_id": "5d18671d5948cd3348ff4fe4578518ed25a77ee73d18e4ee2b21b335d1585df7"}'
+
+
+
+
 

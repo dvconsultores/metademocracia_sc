@@ -33,7 +33,7 @@ pub trait ExtSelf {
     /// Callback after proposal execution.
     fn on_proposal_callback(&mut self, proposal_id: u128) -> PromiseOrValue<()>;
 
-    fn on_set_proposal(&mut self, data: ProposalImput) -> u128;
+    fn on_set_proposal(&mut self, data: ProposalImput, attached_deposit: Balance) -> u128;
 
     fn on_update_proposal(&mut self, id: u128, action: Action, memo: Option<String>);
 }

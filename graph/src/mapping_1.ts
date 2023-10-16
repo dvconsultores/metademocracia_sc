@@ -122,6 +122,7 @@ function handleAction(
             vote.proposal = id.toString();
             vote.user_id = sender_id.toString();
             vote.vote = action.toString();
+            vote.date_time = BigInt.fromU64(blockHeader.timestampNanosec);
 
             let proposal = Proposal.load(id.toString());
             if (proposal) {
@@ -131,6 +132,10 @@ function handleAction(
 
               if(action.toString() == "VoteReject") {
                 proposal.downvote = proposal.downvote.plus(BigInt.fromI32(1));
+              }
+              proposal.status = status.toString();
+              if(status.toString() != "InProgress" && status.toString() != "Failed") {
+                proposal.approval_date = BigInt.fromU64(blockHeader.timestampNanosec);
               }
               proposal.save();
             }

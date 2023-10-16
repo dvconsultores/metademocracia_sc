@@ -22,9 +22,14 @@ impl Contract {
         U128(locked_storage_amount)
     }
 
+    pub fn get_locked_amount(&self) -> U128 {
+        U128(self.locked_amount)
+    }
+    
     pub fn get_available_amount(&self) -> U128 {
         U128(env::account_balance() - self.get_locked_storage_amount().0 - self.locked_amount)
     }
+    
 
     pub fn delegation_total_supply(&self) -> U128 {
         U128(self.total_delegation_amount)

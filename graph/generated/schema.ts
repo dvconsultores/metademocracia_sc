@@ -182,20 +182,20 @@ export class Proposal extends Entity {
     this.set("status", Value.fromString(value));
   }
 
-  get approval_date(): string | null {
+  get approval_date(): BigInt | null {
     let value = this.get("approval_date");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set approval_date(value: string | null) {
+  set approval_date(value: BigInt | null) {
     if (!value) {
       this.unset("approval_date");
     } else {
-      this.set("approval_date", Value.fromString(<string>value));
+      this.set("approval_date", Value.fromBigInt(<BigInt>value));
     }
   }
 
@@ -283,6 +283,15 @@ export class Vote extends Entity {
 
   set vote(value: string) {
     this.set("vote", Value.fromString(value));
+  }
+
+  get date_time(): BigInt {
+    let value = this.get("date_time");
+    return value!.toBigInt();
+  }
+
+  set date_time(value: BigInt) {
+    this.set("date_time", Value.fromBigInt(value));
   }
 }
 

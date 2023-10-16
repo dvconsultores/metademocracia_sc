@@ -342,8 +342,10 @@ impl Contract {
   pub fn set_proposal(&mut self, data: ProposalImput) {
     let policy = self.policy.get().unwrap().to_policy();
     let proposal_bond = policy.proposal_bond.get(&data.kind.to_label().to_string()).expect("ERR_PROPOSAL_BOND_NOT_FOUND");
+    let attached_deposit = env::attached_deposit();
+    
     assert!(
-        env::attached_deposit() >= proposal_bond.0,
+      attached_deposit >= proposal_bond.0,
         "ERR_MIN_BOND"
     );
 
@@ -354,6 +356,7 @@ impl Contract {
       BASE_GAS,
     ).then(ext_self::on_set_proposal(
         data
+        , attached_deposit
         , env::current_account_id()
         , 0
         , Gas(200_000_000_000_000)
@@ -363,14 +366,14 @@ impl Contract {
 
 
   #[private]
-  pub fn on_set_proposal(&mut self, data: ProposalImput) -> u128 {
+  pub fn on_set_proposal(&mut self, data: ProposalImput, attached_deposit: Balance) -> u128 {
     assert_eq!(env::promise_results_count(), 1, "ERR_UNEXPECTED_CALLBACK_PROMISES");
     
     match env::promise_result(0) {
         PromiseResult::NotReady => unreachable!(),
         PromiseResult::Successful(val) => {
             if let Ok(is_allowlisted) = near_sdk::serde_json::from_slice::<U128>(&val) {
-              self._internal_callback_set_proposal(data, is_allowlisted)
+              self._internal_callback_set_proposal(data, attached_deposit, is_allowlisted)
           } else {
               env::panic_str("ERR_WRONG_VAL_RECEIVED")
           }
@@ -381,10 +384,10 @@ impl Contract {
     
   }
 
-  fn _internal_callback_set_proposal(&mut self, data: ProposalImput, members: U128) -> u128 {
+  fn _internal_callback_set_proposal(&mut self, data: ProposalImput, attached_deposit: Balance, members: U128) -> u128 {
     let policy = self.policy.get().unwrap().to_policy();
     let id = self.last_proposal_id;
-    let user_creation: AccountId = env::predecessor_account_id();
+    let user_creation: AccountId = env::signer_account_id();
     let submission_time: u64 = env::block_timestamp();
 
     let proposal: &Proposal = &Proposal {
@@ -417,7 +420,7 @@ impl Contract {
     self.proposals.insert(&id, proposal);
 
     self.last_proposal_id += 1;
-    self.locked_amount += env::attached_deposit();
+    self.locked_amount += attached_deposit;
 
     env::log_str(
       &json!({
@@ -547,7 +550,7 @@ impl Contract {
     let mut proposal: Proposal = self.proposals.get(&id).expect("ERR_NO_PROPOSAL");
     let mut typeAction = "";
     
-    let sender_id = env::predecessor_account_id();
+    let sender_id = env::signer_account_id();
     let policy = self.policy.get().unwrap().to_policy();
     // Check permissions for the given action.
     let allowed =
@@ -572,7 +575,7 @@ impl Contract {
             typeAction = "vote";
             
             // Updates proposal status with new votes using the policy.
-            proposal.status = policy.proposal_status(&proposal);
+            proposal.status = policy.proposal_status(&proposal, members);
 
             if proposal.status == ProposalStatus::Approved {
                 self.internal_execute_proposal(policy, &proposal, id);

@@ -236,6 +236,7 @@ impl Policy {
   pub fn proposal_status(
       &self,
       proposal: &Proposal,
+      members: u128,
   ) -> ProposalStatus {
       assert!(
           matches!(
