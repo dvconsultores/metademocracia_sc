@@ -1001,7 +1001,7 @@ impl Contract {
         );
         tokens_per_owner.get(&account_id).expect("account not member");
 
-        (self.tokens.owner_by_id.len() as u128).into()
+        (tokens_per_owner.try_to_vec().unwrap().len() as u128).into()
     }
 
     pub fn nft_tokens_for_owner(
