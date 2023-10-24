@@ -25,7 +25,7 @@ pub const ONE_YOCTO_NEAR: Balance = 1;
 pub const GAS_FOR_FT_TRANSFER: Gas = Gas(10_000_000_000_000);
 pub const BASE_GAS: Gas = Gas(3_000_000_000_000);
 
-pub const CONTRACT_NFT: &str = "nftv2.metademocracia.testnet";
+pub const CONTRACT_NFT: &str = "nftv3.metademocracia.testnet";
 
 
 #[ext_contract(ext_self)]
@@ -61,7 +61,7 @@ pub struct Contract {
     
     pub administrators: UnorderedSet<AccountId>,
   
-    pub groups: UnorderedMap<AccountId, UnorderedSet<AccountId>>,
+    pub groups: UnorderedMap<AccountId, VersionedPolicy/*UnorderedSet<AccountId>*/>,
   
     pub total_delegation_amount: Balance,
    
@@ -114,6 +114,12 @@ impl Contract {
     }
         
     self.administrators.insert(&user_id);
+
+    env::log_str(
+      &json!({
+        "user_id": user_id.to_string(),
+      }).to_string(),
+    );
     
   }
 
@@ -127,6 +133,11 @@ impl Contract {
     
     self.administrators.remove(&user_id);
     
+    env::log_str(
+      &json!({
+        "user_id": user_id.to_string(),
+      }).to_string(),
+    );
   }
 
 

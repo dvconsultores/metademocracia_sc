@@ -2,6 +2,10 @@ type Proposaldata @entity {
   id: ID!
   proposal_actives: BigInt!
   proposal_total: BigInt!
+  roles: String
+  vote_policy: String
+  proposal_bond: String
+  proposal_period: String
 }
 
 type Proposal @entity {
@@ -20,6 +24,7 @@ type Proposal @entity {
   creation_date: BigInt!
   user_creation: String!
   link: String!
+  admin_appoved: Boolean!
 }
 
 type Vote @entity {
@@ -52,6 +57,27 @@ type Delegator @entity {
   amount: BigInt!
 }
 
+type Fundshist @entity {
+  id: ID!
+  token_id: String!
+  user_id: String!
+  type: String!
+  amount: BigDecimal!
+  date_time: BigInt!
+}
+
+type Datanft @entity {
+  id: ID!
+  total_Supply: BigInt!
+  total_owners: BigInt!
+  owners: [Owners!]! @derivedFrom(field: "data_nft")
+}
+
+type Owners @entity {
+  id: ID!
+  data_nft: Datanft!
+  owner_id: String!
+}
 
 type Serie @entity {
   id: ID!

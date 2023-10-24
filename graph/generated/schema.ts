@@ -59,6 +59,74 @@ export class Proposaldata extends Entity {
   set proposal_total(value: BigInt) {
     this.set("proposal_total", Value.fromBigInt(value));
   }
+
+  get roles(): string | null {
+    let value = this.get("roles");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set roles(value: string | null) {
+    if (!value) {
+      this.unset("roles");
+    } else {
+      this.set("roles", Value.fromString(<string>value));
+    }
+  }
+
+  get vote_policy(): string | null {
+    let value = this.get("vote_policy");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set vote_policy(value: string | null) {
+    if (!value) {
+      this.unset("vote_policy");
+    } else {
+      this.set("vote_policy", Value.fromString(<string>value));
+    }
+  }
+
+  get proposal_bond(): string | null {
+    let value = this.get("proposal_bond");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal_bond(value: string | null) {
+    if (!value) {
+      this.unset("proposal_bond");
+    } else {
+      this.set("proposal_bond", Value.fromString(<string>value));
+    }
+  }
+
+  get proposal_period(): string | null {
+    let value = this.get("proposal_period");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal_period(value: string | null) {
+    if (!value) {
+      this.unset("proposal_period");
+    } else {
+      this.set("proposal_period", Value.fromString(<string>value));
+    }
+  }
 }
 
 export class Proposal extends Entity {
@@ -224,6 +292,15 @@ export class Proposal extends Entity {
 
   set link(value: string) {
     this.set("link", Value.fromString(value));
+  }
+
+  get admin_appoved(): boolean {
+    let value = this.get("admin_appoved");
+    return value!.toBoolean();
+  }
+
+  set admin_appoved(value: boolean) {
+    this.set("admin_appoved", Value.fromBoolean(value));
   }
 }
 
@@ -478,6 +555,192 @@ export class Delegator extends Entity {
 
   set amount(value: BigInt) {
     this.set("amount", Value.fromBigInt(value));
+  }
+}
+
+export class Fundshist extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Fundshist entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Fundshist must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Fundshist", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Fundshist | null {
+    return changetype<Fundshist | null>(store.get("Fundshist", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get token_id(): string {
+    let value = this.get("token_id");
+    return value!.toString();
+  }
+
+  set token_id(value: string) {
+    this.set("token_id", Value.fromString(value));
+  }
+
+  get user_id(): string {
+    let value = this.get("user_id");
+    return value!.toString();
+  }
+
+  set user_id(value: string) {
+    this.set("user_id", Value.fromString(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value!.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
+  }
+
+  get amount(): BigDecimal {
+    let value = this.get("amount");
+    return value!.toBigDecimal();
+  }
+
+  set amount(value: BigDecimal) {
+    this.set("amount", Value.fromBigDecimal(value));
+  }
+
+  get date_time(): BigInt {
+    let value = this.get("date_time");
+    return value!.toBigInt();
+  }
+
+  set date_time(value: BigInt) {
+    this.set("date_time", Value.fromBigInt(value));
+  }
+}
+
+export class Datanft extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Datanft entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Datanft must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Datanft", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Datanft | null {
+    return changetype<Datanft | null>(store.get("Datanft", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get total_Supply(): BigInt {
+    let value = this.get("total_Supply");
+    return value!.toBigInt();
+  }
+
+  set total_Supply(value: BigInt) {
+    this.set("total_Supply", Value.fromBigInt(value));
+  }
+
+  get total_owners(): BigInt {
+    let value = this.get("total_owners");
+    return value!.toBigInt();
+  }
+
+  set total_owners(value: BigInt) {
+    this.set("total_owners", Value.fromBigInt(value));
+  }
+
+  get owners(): Array<string> {
+    let value = this.get("owners");
+    return value!.toStringArray();
+  }
+
+  set owners(value: Array<string>) {
+    this.set("owners", Value.fromStringArray(value));
+  }
+}
+
+export class Owners extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Owners entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Owners must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Owners", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Owners | null {
+    return changetype<Owners | null>(store.get("Owners", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get data_nft(): string {
+    let value = this.get("data_nft");
+    return value!.toString();
+  }
+
+  set data_nft(value: string) {
+    this.set("data_nft", Value.fromString(value));
+  }
+
+  get owner_id(): string {
+    let value = this.get("owner_id");
+    return value!.toString();
+  }
+
+  set owner_id(value: string) {
+    this.set("owner_id", Value.fromString(value));
   }
 }
 

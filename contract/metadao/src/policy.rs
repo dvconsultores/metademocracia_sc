@@ -21,16 +21,16 @@ pub struct VotePolicy {
     pub is_percentage: bool,
 }
 
-impl Default for VotePolicy {
+/*impl Default for VotePolicy {
     fn default() -> Self {
         VotePolicy {
             quorum: U128(0u128),
             threshold: U128(0u128),
-            percentage: 0.0,
+            percentage: 50.0,
             is_percentage: true,
         }
     }
-}
+}*/
 
 
 #[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone)]
@@ -62,8 +62,8 @@ pub fn default_policy(council: Vec<AccountId>) -> Policy {
   // permissions.insert("*:*".to_string());
 
   let mut roles = HashMap::new();
-  roles.insert("all".to_string(), RolePermission {
-    name: "all".to_string(),
+  roles.insert("council".to_string(), RolePermission {
+    name: "council".to_string(),
     users:  council.into_iter().collect::<HashSet<AccountId>>().into(),
     permissions: ["*:*".to_string()].into(),
   });
@@ -87,10 +87,10 @@ pub fn default_policy(council: Vec<AccountId>) -> Policy {
   let vote_policy_default: VotePolicy = VotePolicy {
     quorum: U128(5u128),
     threshold: U128(3u128),
-    percentage: 51.0, 
-    is_percentage: false,
+    percentage: 50.0, 
+    is_percentage: true,
   };
-  let proposal_bond_default: U128 = U128(1u128.pow(24));
+  let proposal_bond_default: U128 = U128(10u128.pow(24));
   let proposal_period_default: U64 = U64(1_000_000_000 * 60 * 60 * 24 * 7);
   
   for kind in proposal_kind.iter() {
@@ -99,12 +99,22 @@ pub fn default_policy(council: Vec<AccountId>) -> Policy {
     proposal_period.insert(kind.to_string(), proposal_period_default);
   }
 
+  env::log_str(
+    &json!({
+      "roles": json!(roles).to_string(),
+      "vote_policy": json!(vote_policy).to_string(),
+      "proposal_bond": json!(proposal_bond).to_string(),
+      "proposal_period": json!(proposal_period).to_string(),
+    }).to_string(),
+  );
+  
   Policy {
       roles: roles,
       vote_policy: vote_policy,
       proposal_bond: proposal_bond,
       proposal_period: proposal_period,
   }
+
 }
 
 impl VersionedPolicy {
@@ -203,7 +213,7 @@ impl Policy {
     let roles = self.get_user_roles(user);
     let mut allowed = false;
     
-    if proposal_kind.to_label() == "Transfer" {
+    if proposal_kind.to_label() == "Transfer" || proposal_kind.to_label() == "FunctionCall" {
       return true
     }
 
@@ -237,6 +247,7 @@ impl Policy {
       &self,
       proposal: &Proposal,
       members: u128,
+      admin_appoved: bool,
   ) -> ProposalStatus {
       assert!(
           matches!(
@@ -254,28 +265,27 @@ impl Policy {
       
       let vote_policy = self.vote_policy.get(&proposal.kind.to_label().to_string()).expect("ERR_NOT_VOTE_POLICY");
 
-      let threshold: u128 = vote_policy.threshold.0;
+      let percentage: f64 = vote_policy.percentage;
 
       // Check if there is anything voted above the threshold specified by policy for given role.
       let actions: Vec<Action>  = vec![Action::VoteApprove, Action::VoteReject, Action::VoteRemove];
 
       for action in actions.iter() {
         let vote_counts = proposal.vote_counts.get(&action).unwrap_or(0u128);
+        let percentage_vote: f64 = ((vote_counts as f64) / (members as f64)) * 100.0;
         
         match action {
-          Action::VoteApprove => if vote_counts >= threshold { return ProposalStatus::Approved },
-          Action::VoteReject => if vote_counts >= threshold { return ProposalStatus::Rejected},
-          Action::VoteReject => if vote_counts >= threshold { return ProposalStatus::Rejected},
+          Action::VoteApprove => if percentage_vote >= percentage { 
+            let mut status_return = proposal.status.clone();
+            if admin_appoved {
+              status_return = ProposalStatus::Approved
+            }
+            return status_return
+          },
+          Action::VoteReject => if percentage_vote >= percentage { return ProposalStatus::Rejected},
+          Action::VoteReject => if percentage_vote >= percentage { return ProposalStatus::Rejected},
           _ => continue
         }
-
-        /*if action === &Action::VoteApprove && vote_counts >= threshold {
-            return ProposalStatus::Approved;
-        } else if action === &Action::VoteReject && vote_counts >= threshold {
-            return ProposalStatus::Rejected;
-        } else if action === &Action::VoteRemove && vote_counts >= threshold {
-            return ProposalStatus::Removed;
-        }*/
       }
       
       proposal.status.clone()

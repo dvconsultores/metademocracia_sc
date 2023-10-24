@@ -1,5 +1,5 @@
 import { near, BigInt, JSONValue, json, ipfs, log, TypedMap, Value, typeConversion, BigDecimal, bigInt, bigDecimal } from "@graphprotocol/graph-ts"
-import { Serie, Nft } from "../generated/schema"
+import { Serie, Nft, Datanft, Owners } from "../generated/schema"
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
   const actions = receipt.receipt.actions;
@@ -223,6 +223,17 @@ function handleAction(
           metadata.supply = metadata.supply.plus(BigInt.fromString("1"))
           metadata.save()
         }
+
+        
+        let datanft = Datanft.load("1");
+        if(!datanft) {
+          datanft = new Datanft("1");
+          datanft.total_Supply = BigInt.fromI32(0);
+          datanft.total_owners = BigInt.fromI32(0);
+        }
+
+        datanft.total_Supply = datanft.total_Supply.plus(BigInt.fromI32(1));
+
         
       }
     }

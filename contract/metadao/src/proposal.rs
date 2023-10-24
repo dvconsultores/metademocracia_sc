@@ -2,6 +2,7 @@ use crate::*;
 use near_contract_standards::fungible_token::core_impl::ext_fungible_token;
 
 #[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Debug)]
+#[derive(Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub enum Action {
     AddProposal,
@@ -26,7 +27,8 @@ impl Action {
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize)]
-#[cfg_attr(not(target_arch = "wasm32"), derive(Clone, Debug))]
+// #[cfg_attr(not(target_arch = "wasm32"), derive(Clone, Debug))]
+#[derive(Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub struct ActionCall {
     method_name: String,
@@ -57,15 +59,16 @@ pub struct PolicyParameters {
 
 
 #[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize)]
-#[cfg_attr(not(target_arch = "wasm32"), derive(Clone, Debug))]
+// #[cfg_attr(not(target_arch = "wasm32"))]
+#[derive(Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub enum ProposalKind {
 
     ChangePolicy { policy: VersionedPolicy  },
 
-    AddMemberFromGroup { group_id: AccountId, member_id: AccountId },
+    AddMemberFromGroup { group_id: AccountId, member_id: AccountId, rol_name: String, },
     
-    RemoveMemberFromGroup { group_id: AccountId, member_id: AccountId },
+    RemoveMemberFromGroup { group_id: AccountId, member_id: AccountId, rol_name: String, },
     
     FunctionCall {
         receiver_id: AccountId,
@@ -129,6 +132,7 @@ pub struct Proposal {
   pub status: ProposalStatus,
   pub approval_date: Option<U64>,
   pub link: String,
+  pub admin_appoved: bool,
 }
 
 impl Proposal {
@@ -141,7 +145,6 @@ impl Proposal {
       self.votes.get(&account_id).is_none(),
       "ERR_ALREADY_VOTED"
     );
-      
       let mut votes: u128 = 0;
       let vote_counts = self.vote_counts.get(action);
       if vote_counts.is_some() {
@@ -219,17 +222,21 @@ impl Contract {
 
           PromiseOrValue::Value(())
       },
-      ProposalKind::AddMemberFromGroup { group_id, member_id } => {
-        let mut group = self.groups.get(&group_id).expect("ERR_GROUP_NOT_FOUND");
-        group.insert(&member_id);
-        self.groups.insert(&group_id, &group);
+      ProposalKind::AddMemberFromGroup { group_id, member_id, rol_name } => {
+        let group = self.groups.get(&group_id).expect("ERR_GROUP_NOT_FOUND");
+        let mut new_policy = group.to_policy().clone();
+        new_policy.add_member_to_role(rol_name.to_string(), member_id.clone());
+        
+        self.groups.insert(&group_id, &VersionedPolicy::Current(new_policy));
 
         PromiseOrValue::Value(())
       },
-      ProposalKind::RemoveMemberFromGroup {group_id, member_id } => {
+      ProposalKind::RemoveMemberFromGroup {group_id, member_id, rol_name } => {
         let mut group = self.groups.get(&group_id).expect("ERR_GROUP_NOT_FOUND");
-        group.remove(&member_id);
-        self.groups.insert(&group_id, &group);
+        let mut new_policy = group.to_policy().clone();
+        new_policy.remove_member_from_role(rol_name.to_string(), member_id.clone());
+
+        self.groups.insert(&group_id, &VersionedPolicy::Current(new_policy));
 
         PromiseOrValue::Value(())
       },
@@ -414,6 +421,7 @@ impl Contract {
       status: ProposalStatus::InProgress,
       approval_date: None,
       link: data.link.clone(),
+      admin_appoved: false,
     };
     
     
@@ -441,72 +449,6 @@ impl Contract {
 
     id
   }
-
-  // agregar propuesta
-  /*#[payable]
-  pub fn set_proposal(&mut self, data: ProposalImput) -> u128 {
-    let policy = self.policy.get().unwrap().to_policy();
-    let proposal_bond = policy.proposal_bond.get(&data.kind.to_label().to_string()).expect("ERR_PROPOSAL_BOND_NOT_FOUND");
-    assert!(
-        env::attached_deposit() >= proposal_bond.0,
-        "ERR_MIN_BOND"
-    );
-    
-    let id = self.last_proposal_id;
-    let user_creation: AccountId = env::predecessor_account_id();
-    let submission_time: u64 = env::block_timestamp();
-
-    let proposal: &Proposal = &Proposal {
-      title: data.title.clone(),
-      description: data.description.clone(),
-      proposer: data.proponent.clone(),
-      submission_time: U64::from(submission_time),
-      kind: data.kind,
-      group: data.group.clone(),
-      vote_counts: UnorderedMap::new(
-        StorageKey::KeyProposalsByVoteCounts {
-          proposals_id: id,
-        }
-        .try_to_vec()
-        .unwrap(),
-      ),
-      votes: UnorderedMap::new(
-        StorageKey::KeyProposalsByVotes {
-          proposals_id: id,
-        }
-        .try_to_vec()
-        .unwrap(),
-      ),
-      status: ProposalStatus::InProgress,
-      approval_date: None,
-      link: data.link.clone(),
-    };
-    
-    
-    self.proposals.insert(&id, proposal);
-
-    self.last_proposal_id += 1;
-    self.locked_amount += env::attached_deposit();
-
-    env::log_str(
-      &json!({
-        "id": id.to_string(),
-        "title": data.title,
-        "proposal_type": proposal.kind.to_label().to_string(),
-        "kind": json!(proposal.kind).to_string(),
-        "description": data.description,
-        "proposer": data.proponent,
-        "group": data.group,
-        "submission_time": submission_time.to_string(),
-        "status": ProposalStatus::InProgress,
-        "creation_date": env::block_timestamp().to_string(),
-        "user_creation": user_creation,
-        "link": data.link
-      }).to_string(),
-    );
-
-    id
-  }*/
 
 
   // agregar propuesta
@@ -569,15 +511,25 @@ impl Contract {
                 matches!(proposal.status, ProposalStatus::InProgress),
                 "ERR_PROPOSAL_NOT_READY_FOR_VOTE"
             );
-            
+
+            if self.administrators.contains(&sender_id.clone()) {
+              if action.to_label() == "VoteApprove" {
+                proposal.admin_appoved = true;
+              }
+            }
+
             proposal.update_votes(sender_id.clone(), &action);
 
             typeAction = "vote";
+
+            self.proposals.insert(&id, &proposal);
+
+            proposal = self.proposals.get(&id).expect("ERR_NO_PROPOSAL");
             
             // Updates proposal status with new votes using the policy.
-            proposal.status = policy.proposal_status(&proposal, members);
+            proposal.status = policy.proposal_status(&proposal, members, proposal.admin_appoved.clone());
 
-            if proposal.status == ProposalStatus::Approved {
+            if proposal.status == ProposalStatus::Approved  {
                 self.internal_execute_proposal(policy, &proposal, id);
                 true
             } else if proposal.status == ProposalStatus::Removed {
@@ -600,14 +552,10 @@ impl Contract {
         //  - if the number of votes in the group has changed (new members has been added) -
         //      the proposal can loose it's approved state. In this case new proposal needs to be made, this one can only expire.
         Action::Finalize => {
-            /*proposal.status = policy.proposal_status(
-                &proposal,
-                policy.roles.iter().map(|r| r.name.clone()).collect(),
-                self.total_delegation_amount,
-            );
+            proposal.status = policy.proposal_status(&proposal, members, proposal.admin_appoved.clone());
             match proposal.status {
                 ProposalStatus::Approved => {
-                    self.internal_execute_proposal(&policy, &proposal, id);
+                    self.internal_execute_proposal(policy, &proposal, id);
                 }
                 ProposalStatus::Expired => {
                     self.internal_reject_proposal(&policy, &proposal, true);
@@ -615,7 +563,7 @@ impl Contract {
                 _ => {
                     env::panic_str("ERR_PROPOSAL_NOT_EXPIRED_OR_FAILED");
                 }
-            }*/
+            }
             true
         }
     };
@@ -630,107 +578,20 @@ impl Contract {
         "action": action,
         "status": proposal.status,
         "memo": memo.clone(),
-        "sender_id": sender_id.to_string()
+        "sender_id": sender_id.to_string(),
+        "admin_appoved": proposal.admin_appoved,
       }).to_string(),
     );
   }
 
-  /*pub fn update_proposal(&mut self, id: u128, action: &Action, memo: Option<String>) {
-    let mut proposal: Proposal = self.proposals.get(&id).expect("ERR_NO_PROPOSAL");
-    let mut typeAction = "";
-    
-    let sender_id = env::predecessor_account_id();
-    let policy = self.policy.get().unwrap().to_policy();
-    // Check permissions for the given action.
-    let allowed =
-        policy.check_permission(sender_id.clone(), &proposal.kind, action);
-    assert!(allowed, "ERR_PERMISSION_DENIED");
-    
-    
-    let update = match action {
-        Action::AddProposal => env::panic_str("ERR_WRONG_ACTION"),
-        Action::RemoveProposal => {
-            self.proposals.remove(&id);
-            false
-        }
-        Action::VoteApprove | Action::VoteReject | Action::VoteRemove => {
-            assert!(
-                matches!(proposal.status, ProposalStatus::InProgress),
-                "ERR_PROPOSAL_NOT_READY_FOR_VOTE"
-            );
-            
-            proposal.update_votes(sender_id.clone(), &action);
-
-            typeAction = "vote";
-            
-            // Updates proposal status with new votes using the policy.
-            proposal.status = policy.proposal_status(&proposal);
-
-            if proposal.status == ProposalStatus::Approved {
-                self.internal_execute_proposal(policy, &proposal, id);
-                true
-            } else if proposal.status == ProposalStatus::Removed {
-                self.internal_reject_proposal(&policy, &proposal, false);
-                self.proposals.remove(&id);
-                false
-            } else if proposal.status == ProposalStatus::Rejected {
-                self.internal_reject_proposal(&policy, &proposal, true);
-                true
-            } else {
-                // Still in progress or expired.
-                true
-            }
-        }
-        // There are two cases when proposal must be finalized manually: expired or failed.
-        // In case of failed, we just recompute the status and if it still approved, we re-execute the proposal.
-        // In case of expired, we reject the proposal and return the bond.
-        // Corner cases:
-        //  - if proposal expired during the failed state - it will be marked as expired.
-        //  - if the number of votes in the group has changed (new members has been added) -
-        //      the proposal can loose it's approved state. In this case new proposal needs to be made, this one can only expire.
-        Action::Finalize => {
-            /*proposal.status = policy.proposal_status(
-                &proposal,
-                policy.roles.iter().map(|r| r.name.clone()).collect(),
-                self.total_delegation_amount,
-            );
-            match proposal.status {
-                ProposalStatus::Approved => {
-                    self.internal_execute_proposal(&policy, &proposal, id);
-                }
-                ProposalStatus::Expired => {
-                    self.internal_reject_proposal(&policy, &proposal, true);
-                }
-                _ => {
-                    env::panic_str("ERR_PROPOSAL_NOT_EXPIRED_OR_FAILED");
-                }
-            }*/
-            true
-        }
-    };
-    if update {
-        self.proposals.insert(&id, &proposal);
-    }
-
-    env::log_str(
-      &json!({
-        "id": id.to_string(),
-        "type": typeAction,
-        "action": action,
-        "status": proposal.status,
-        "memo": memo.clone(),
-        "sender_id": sender_id.to_string()
-      }).to_string(),
-    );
-  }*/
 
   #[private]
   pub fn on_proposal_callback(&mut self, proposal_id: u128) -> PromiseOrValue<()> {
     let mut proposal: Proposal = self
         .proposals
         .get(&proposal_id)
-        .expect("ERR_NO_PROPOSAL")
-        .into();
+        .expect("ERR_NO_PROPOSAL");
+
     assert_eq!(
         env::promise_results_count(),
         1,
@@ -738,11 +599,46 @@ impl Contract {
     );
     let result = match env::promise_result(0) {
         PromiseResult::NotReady => unreachable!(),
-        PromiseResult::Successful(_) => self.internal_callback_proposal_success(&mut proposal),
+        PromiseResult::Successful(_) => {
+          let type_proposal = proposal.kind.clone().to_label().to_string();
+          let (token_id, sender_id, amount): (Option<String>, Option<String>, Option<String>) = match proposal.kind.clone() {
+            ProposalKind::Transfer { token_id, receiver_id, amount, msg } => (Some(token_id.unwrap_or("NEAR".to_string())), Some(receiver_id.to_string()), Some(amount.0.to_string())),
+            _=> (None, None, None)
+          };
+
+          env::log_str(
+            &json!({
+              "id": proposal_id.to_string(),
+              "type": type_proposal,
+              "status": proposal.status,
+              "sender_id": sender_id,
+              "amount": amount,
+              "token_id": token_id,
+            }).to_string()
+          );
+          self.internal_callback_proposal_success(&mut proposal)
+        },
         PromiseResult::Failed => self.internal_callback_proposal_fail(&mut proposal),
     };
-    self.proposals
-        .insert(&proposal_id, &proposal);
+    self.proposals.insert(&proposal_id, &proposal);
+
     result
   }
 }
+
+
+/*
+  {
+  pub title: String,
+  pub description: String,
+  pub proposer: AccountId,
+  pub kind: ProposalKind,
+  pub group: Option<AccountId>,
+  pub submission_time: U64,
+  pub vote_counts: UnorderedMap<Action, u128>,
+  pub votes: UnorderedMap<AccountId, Action>,
+  pub status: ProposalStatus,
+  pub approval_date: Option<U64>,
+  pub link: String,
+}
+*/

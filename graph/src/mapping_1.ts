@@ -6,6 +6,7 @@ import {
   Delegation,
   Delegationhist,
   Delegator,
+  Fundshist,
 } from "../generated/schema"
 
 
@@ -31,6 +32,39 @@ function handleAction(
   if (action.kind != near.ActionKind.FUNCTION_CALL) return;
 
   const methodName = action.toFunctionCall().methodName;
+  if (methodName == 'new') {
+    if(outcome.logs.length > 0) {
+      const outcomeLog = outcome.logs[0].toString();
+      
+      if(!json.try_fromString(outcomeLog).isOk) return
+      let outcomelogs = json.try_fromString(outcomeLog);
+      const jsonObject = outcomelogs.value.toObject();
+      
+
+      if (jsonObject) {  
+        const roles = jsonObject.get('roles');
+        const vote_policy = jsonObject.get('vote_policy');
+        const proposal_bond = jsonObject.get('proposal_bond');
+        const proposal_period = jsonObject.get('proposal_period');
+        
+        if (!roles || !vote_policy || !proposal_bond || !proposal_period) return;
+      
+        let proposaldata = Proposaldata.load("1");
+        if(!proposaldata) {
+          proposaldata = new Proposaldata("1")
+          proposaldata.proposal_actives = BigInt.fromI32(0);
+          proposaldata.proposal_total = BigInt.fromI32(0);
+        }
+        proposaldata.roles = roles.toString();
+        proposaldata.vote_policy = vote_policy.toString();
+        proposaldata.proposal_bond = proposal_bond.toString();
+        proposaldata.proposal_period = proposal_period.toString();
+
+        proposaldata.save();
+      }
+    }
+  }
+
 
   if (methodName == 'on_set_proposal') {
     if(outcome.logs.length > 0) {
@@ -73,7 +107,8 @@ function handleAction(
           proposal.status = status.toString();
           proposal.creation_date = BigInt.fromString(creation_date.toString());
           proposal.user_creation = user_creation.toString();
-          proposal.link = link.toString()
+          proposal.link = link.toString();
+          proposal.admin_appoved = false;
           proposal.save()
 
           let proposaldata = Proposaldata.load("1");
@@ -108,10 +143,11 @@ function handleAction(
         const type = jsonObject.get('type');
         const action = jsonObject.get('action');
         const status = jsonObject.get('status');
-        const memo = jsonObject.get('memo');
+        //const memo = jsonObject.get('memo');
         const sender_id = jsonObject.get('sender_id');
+        const admin_appoved = jsonObject.get('admin_appoved');
 
-        if (!id || !type || !action || !status || !memo || !sender_id) return;
+        if (!id || !type || !action || !status || !sender_id) return;
         
         if(type.toString() == "vote") {
           let idVote = id.toString() + sender_id.toString();
@@ -134,8 +170,12 @@ function handleAction(
                 proposal.downvote = proposal.downvote.plus(BigInt.fromI32(1));
               }
               proposal.status = status.toString();
-              if(status.toString() != "InProgress" && status.toString() != "Failed") {
+              if(status.toString() == "Approved") {
                 proposal.approval_date = BigInt.fromU64(blockHeader.timestampNanosec);
+              }
+
+              if(admin_appoved) {
+                proposal.admin_appoved = admin_appoved.toBool();
               }
               proposal.save();
             }
@@ -177,9 +217,9 @@ function handleAction(
 
         if (!prev_amount || !new_amount || !delegate_amount || !delegacion_total || !delegator) return;
         
-        let delegation = Delegation.load("near");
+        let delegation = Delegation.load("NEAR");
         if (!delegation) {
-          delegation = new Delegation("near");
+          delegation = new Delegation("NEAR");
           delegation.total_amount = BigInt.fromI32(0);
         }
 
@@ -187,11 +227,11 @@ function handleAction(
 
         delegation.save()
         
-        let id_delegationhist = "near" + delegator.toString() + BigInt.fromU64(blockHeader.timestampNanosec).toString()
+        let id_delegationhist = "NEAR" + delegator.toString() + BigInt.fromU64(blockHeader.timestampNanosec).toString()
         let delegationhist = Delegationhist.load(id_delegationhist);
         if (!delegationhist) {
           delegationhist = new Delegationhist(id_delegationhist);
-          delegationhist.delegation = "near";
+          delegationhist.delegation = "NEAR";
           delegationhist.date_time = BigInt.fromU64(blockHeader.timestampNanosec);
           delegationhist.delegator = delegator.toString();
           delegationhist.amount = BigInt.fromString(delegate_amount.toString());
@@ -199,11 +239,21 @@ function handleAction(
           delegationhist.save();
         }
 
-        let id_delegator = "near" + delegator.toString()
+        let id_funds = "NEAR" + delegator.toString() + BigInt.fromU64(blockHeader.timestampNanosec).toString()
+        let fundshist = new Fundshist(id_funds);
+        fundshist.user_id = delegator.toString()
+        fundshist.date_time = BigInt.fromU64(blockHeader.timestampNanosec);
+        fundshist.token_id = "NEAR";
+        fundshist.amount = BigDecimal.fromString(delegate_amount.toString()).div(BigDecimal.fromString("1000000000000000000000000"));
+        fundshist.type = "received";
+
+        fundshist.save();
+
+        let id_delegator = "NEAR" + delegator.toString()
         let delegator_entity = Delegator.load(id_delegator);
         if (!delegator_entity) {
           delegator_entity = new Delegator(id_delegator);
-          delegator_entity.delegation = "near";
+          delegator_entity.delegation = "NEAR";
           delegator_entity.delegator = delegator.toString();
           delegator_entity.amount = BigInt.fromI32(0);
         }
@@ -220,4 +270,41 @@ function handleAction(
   }
 
 
+  if (methodName == 'on_proposal_callback') {
+    if(outcome.logs.length > 0) {
+      const outcomeLog = outcome.logs[0].toString();
+      
+      if(!json.try_fromString(outcomeLog).isOk) return
+      let outcomelogs = json.try_fromString(outcomeLog);
+      const jsonObject = outcomelogs.value.toObject();
+
+      if (jsonObject) {  
+        const id = jsonObject.get('id');
+        const amount = jsonObject.get('amount');
+        const sender_id = jsonObject.get('sender_id');
+        const status = jsonObject.get('status');
+        const type = jsonObject.get('type');
+
+        if (!id || !amount || !sender_id || !status || !type) return;
+        
+        let delegation = Delegation.load("NEAR");
+        if (!delegation) {
+          delegation = new Delegation("NEAR");
+          delegation.total_amount = BigInt.fromI32(0);
+        }
+
+        let id_funds = id.toString()
+        let fundshist = new Fundshist(id_funds);
+        fundshist.user_id = sender_id.toString()
+        fundshist.date_time = BigInt.fromU64(blockHeader.timestampNanosec);
+        fundshist.token_id = "NEAR";
+        fundshist.amount = BigDecimal.fromString(amount.toString()).div(BigDecimal.fromString("1000000000000000000000000"));
+        fundshist.type = "transfer";
+
+        fundshist.save();
+        
+        
+      }
+    }
+  }
 }

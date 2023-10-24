@@ -22,7 +22,7 @@ impl Contract {
             "ERR_INVALID_CALLER"
         );*/
 
-        let mut delegacion = self.delegations.get(account_id);
+        let delegacion = self.delegations.get(account_id);
 
         let mut prev_amount = 0;
         

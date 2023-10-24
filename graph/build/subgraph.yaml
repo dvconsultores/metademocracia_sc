@@ -8,8 +8,8 @@ dataSources:
     name: metademocracia
     network: near-testnet
     source:
-      account: daov4.metademocracia.testnet
-      startBlock: 141505771
+      account: daov5.metademocracia.testnet
+      startBlock: 142412100
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
@@ -25,8 +25,8 @@ dataSources:
     name: metademocracia-nft
     network: near-testnet
     source:
-      account: nftv2.metademocracia.testnet
-      startBlock: 141306532
+      account: nftv3.metademocracia.testnet
+      startBlock: 142416367
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
@@ -36,3 +36,37 @@ dataSources:
       receiptHandlers:
         - handler: handleReceipt
       file: metademocracia-nft\metademocracia-nft.wasm
+  - kind: near
+    name: toke-usdt
+    network: near-testnet
+    source:
+      account: usdt.tokens-pruebas.testnet
+      startBlock: 142539318
+    mapping:
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Delegation
+        - Delegationhist
+        - Delegator
+        - Fundshist
+      receiptHandlers:
+        - handler: handleReceipt
+      file: toke-usdt\toke-usdt.wasm
+  - kind: near
+    name: toke-usdc
+    network: near-testnet
+    source:
+      account: usdc.tokens-pruebas.testnet
+      startBlock: 142539713
+    mapping:
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Delegation
+        - Delegationhist
+        - Delegator
+        - Fundshist
+      receiptHandlers:
+        - handler: handleReceipt
+      file: toke-usdc\toke-usdc.wasm
