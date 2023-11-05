@@ -77,7 +77,8 @@ pub fn default_policy(council: Vec<AccountId>) -> Policy {
     "ChangePolicyAddOrUpdateRole",
     "ChangePolicyRemoveRole",
     "ChangePolicyUpdateVotePolicy",
-    "ChangePolicyUpdateParameters"
+    "ChangePolicyUpdateParameters",
+    "Voting"
   ];
 
   let mut vote_policy = HashMap::new();

@@ -89,6 +89,8 @@ pub enum ProposalKind {
     ChangePolicyUpdateVotePolicy { proposal_kind: String, vote_policy: VotePolicy },
 
     ChangePolicyUpdateParameters { proposal_kind: String, parameters: PolicyParameters },
+
+    Voting,
 }
 
 impl ProposalKind {
@@ -103,6 +105,7 @@ impl ProposalKind {
       ProposalKind::ChangePolicyRemoveRole { .. } => "ChangePolicyRemoveRole",
       ProposalKind::ChangePolicyUpdateVotePolicy { .. } => "ChangePolicyUpdateVotePolicy",
       ProposalKind::ChangePolicyUpdateParameters { .. } => "ChangePolicyUpdateParameters",
+      ProposalKind::Voting => "Voting",
     }
   }
 }
@@ -294,6 +297,7 @@ impl Contract {
           self.policy.set(&VersionedPolicy::Current(new_policy));
           PromiseOrValue::Value(())
       }
+      _=> PromiseOrValue::Value(())
     };
     match result {
         PromiseOrValue::Promise(promise) => promise
