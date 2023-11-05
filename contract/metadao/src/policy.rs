@@ -284,7 +284,7 @@ impl Policy {
             return status_return
           },
           Action::VoteReject => if percentage_vote >= percentage { return ProposalStatus::Rejected},
-          Action::VoteReject => if percentage_vote >= percentage { return ProposalStatus::Rejected},
+          Action::VoteRemove => if percentage_vote >= percentage { return ProposalStatus::Removed},
           _ => continue
         }
       }
