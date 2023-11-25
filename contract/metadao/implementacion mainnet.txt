@@ -1,0 +1,89 @@
+NEAR_ENV=mainnet near login
+
+NEAR_ENV=mainnet near delete daov1.metademocracia_dao.near metademocracia_dao.near
+NEAR_ENV=mainnet near create-account daov1.metademocracia_dao.near --masterAccount metademocracia_dao.near --initialBalance 9
+
+cargo build --target wasm32-unknown-unknown --release
+NEAR_ENV=mainnet near deploy --wasmFile target/wasm32-unknown-unknown/release/meta_democracia.wasm --accountId daov1.metademocracia_dao.near
+
+
+NEAR_ENV=mainnet near call daov1.metademocracia_dao.near new '{"owner_id": "daov1.metademocracia_dao.near", "policy": ''["daov1.metademocracia_dao.near"]'' }' --accountId daov1.metademocracia_dao.near
+
+NEAR_ENV=mainnet near call daov1.metademocracia_dao.near set_admin '{"user_id": "daov1.metademocracia_dao.near"}' --accountId daov1.metademocracia_dao.near
+
+NEAR_ENV=mainnet near call daov1.metademocracia_dao.near set_admin '{"user_id": "ceballos.near"}' --accountId daov1.metademocracia_dao.near
+
+NEAR_ENV=mainnet near call daov1.metademocracia_dao.near set_admin '{"user_id": "fritzwagner.near"}' --accountId daov1.metademocracia_dao.near
+
+
+
+
+near call daov1.metademocracia_dao.near set_proposal '{"data": { "title": "primera propuesta", "description": "probando la propuesta de transferencia de fondos", "proponent": "hpalencia.testnet", "kind": { "Transfer": { "token_id": null, "receiver_id": "hpalencia.testnet", "amount": "1000000000000000000000000" } }, "link": "https://link" } }' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
+
+near call daov1.metademocracia_dao.near set_proposal '{"data": "1",  }' --accountId daov1.metademocracia_dao.near --deposit 1
+
+near call daov1.metademocracia_dao.near prueba --accountId daov1.metademocracia_dao.near --gas 300000000000000
+
+
+near call daov1.metademocracia_dao.near prueba --accountId hpalencia.testnet --gas 300000000000000
+
+
+
+near call daov1.metademocracia_dao.near set_proposal '{"data": { "title": "propuesta", "description": "probando la propuesta de transferencia de fondos", "proponent": "hpalencia.testnet", "kind": { "Transfer": { "token_id": null, "receiver_id": "hpalencia.testnet", "amount": "1000000000000000000000000" } }, "link": "https://link" } }' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
+
+near call daov1.metademocracia_dao.near update_proposal '{"id": 1, "action": "VoteApprove"}' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
+
+near view daov1.metademocracia_dao.near get_locked_storage_amount
+
+near view daov1.metademocracia_dao.near get_locked_amount
+
+
+
+
+------------------------------------------- nft -------------------------------------------------------------------------------- 
+
+NEAR_ENV=mainnet near delete nftv1.metademocracia_dao.near metademocracia_dao.near
+NEAR_ENV=mainnet near create-account nftv1.metademocracia_dao.near --masterAccount metademocracia_dao.near --initialBalance 9
+
+cargo build --target wasm32-unknown-unknown --release
+NEAR_ENV=mainnet near deploy --wasmFile target/wasm32-unknown-unknown/release/meta_democracia.wasm --accountId nftv1.metademocracia_dao.near
+
+
+NEAR_ENV=mainnet near call nftv1.metademocracia_dao.near new_default_meta '{"owner_id": "nftv1.metademocracia_dao.near", "vault_id": "nftv1.metademocracia_dao.near"}' --accountId nftv1.metademocracia_dao.near
+
+
+NEAR_ENV=mainnet near call nftv1.metademocracia_dao.near update_tasa '{"tasa": 1.13}' --accountId nftv1.metademocracia_dao.near
+
+NEAR_ENV=mainnet near call nftv1.metademocracia_dao.near nft_series '{"token_metadata":{"title": "Membresía", "description": "Membresía metademocracia", "media": "https://bafybeicgaadzyolgrb62sn2oexyel4vfluk6st42yq5d5nmbo3e4ltu7i4.ipfs.w3s.link/Capture.PNG", "reference": "1"}, "price": 1, "royalty":{"daov1.metademocracia_dao.near": 1000} }' --accountId nftv1.metademocracia_dao.near --depositYocto 10910000000000000000000
+
+
+
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "hrpalencia.near"}' --accountId nftv1.metademocracia_dao.near --depositYocto 8590000000000000000000
+
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "971e37e037240c63fd016900eb59ae0b92ea95b860955d67ba9aeb683eaf3893"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9410000000000000000000
+
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "02146f2294fe8f8247a4732766174decff338e1d0aa71cac0c9aef2a27ea0e6d"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+
+
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint_for '{"token_series_id": "1", "nft_quantity": 10, "receiver_id": "ceballos.near"}' --accountId nftv1.metademocracia_dao.near --depositYocto 8590000000000000000000 --gas 300000000000000
+
+
+
+
+
+
+near view nftv1.metademocracia_dao.near is_member '{"account_id": "pruaab.testnet"}'
+
+near view nftv1.metademocracia_dao.near is_member '{"account_id": "pruaab.testnet"}' --accountId nftv1.metademocracia_dao.near
+
+near view nftv1.metademocracia_dao.near nft_total_supply
+
+
+near view nftv2.metademocracia_dao.near is_member '{"account_id": "pruaab.testnet"}'
+near view nftv2.metademocracia_dao.near nft_total_supply
+near call nftv2.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "data2.testnet"}' --accountId nftv2.metademocracia_dao.near --depositYocto 9490000000000000000000
+
+
+
+
+

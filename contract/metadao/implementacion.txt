@@ -48,7 +48,7 @@ near call nftv3.metademocracia.testnet update_tasa '{"tasa": 2.13}' --accountId 
 
 near call nftv3.metademocracia.testnet nft_series '{"token_metadata":{"title": "Membresía", "description": "Membresía metademocracia", "media": "https://bafybeicgaadzyolgrb62sn2oexyel4vfluk6st42yq5d5nmbo3e4ltu7i4.ipfs.w3s.link/Capture.PNG", "reference": "1"}, "price": 1, "royalty":{"daov5.metademocracia.testnet": 1000} }' --accountId nftv3.metademocracia.testnet --depositYocto 10910000000000000000000
 
-near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "hpalencia.testnet"}' --accountId nftv3.metademocracia.testnet --depositYocto 8470000000000000000000
+near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "hpalencia.testnet"}' --accountId nftv3.metademocracia.testnet --depositYocto 8630000000000000000000
 
 near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "pruaab.testnet"}' --accountId nftv3.metademocracia.testnet --depositYocto 9490000000000000000000
 
@@ -62,7 +62,13 @@ near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "recei
 
 near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "prueba90.testnet"}' --accountId nftv3.metademocracia.testnet --depositYocto 9490000000000000000000
 
+near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "e4bf5cd745892137e6ee997579953b51200a4f3714cf15804dca8f40f3117b63"}' --accountId nftv3.metademocracia.testnet --depositYocto 9570000000000000000000
+
 near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "daov5.metademocracia.testnet"}' --accountId nftv3.metademocracia.testnet --depositYocto 9490000000000000000000
+
+
+near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "metademocracia.testnet"}' --accountId nftv3.metademocracia.testnet --depositYocto 9490000000000000000000
+near call nftv3.metademocracia.testnet nft_mint '{"token_series_id": "1", "receiver_id": "merchant2023.testnet"}' --accountId nftv3.metademocracia.testnet --depositYocto 9490000000000000000000
 
 
 
