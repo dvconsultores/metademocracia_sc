@@ -91,7 +91,7 @@ pub fn default_policy(council: Vec<AccountId>) -> Policy {
     percentage: 50.0, 
     is_percentage: true,
   };
-  let proposal_bond_default: U128 = U128(10u128.pow(24));
+  let proposal_bond_default: U128 = U128(10u128.pow(22));
   let proposal_period_default: U64 = U64(1_000_000_000 * 60 * 60 * 24 * 7);
   
   for kind in proposal_kind.iter() {

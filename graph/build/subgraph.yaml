@@ -6,10 +6,10 @@ features:
 dataSources:
   - kind: near
     name: metademocracia
-    network: near-testnet
+    network: near-mainnet
     source:
-      account: daov5.metademocracia.testnet
-      startBlock: 144741287
+      account: daov1.metademocracia_dao.near
+      startBlock: 105477143
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
@@ -23,10 +23,10 @@ dataSources:
       file: metademocracia\metademocracia.wasm
   - kind: near
     name: metademocracia-nft
-    network: near-testnet
+    network: near-mainnet
     source:
-      account: nftv3.metademocracia.testnet
-      startBlock: 142416367
+      account: nftv1.metademocracia_dao.near
+      startBlock: 105477553
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
@@ -38,10 +38,10 @@ dataSources:
       file: metademocracia-nft\metademocracia-nft.wasm
   - kind: near
     name: toke-usdt
-    network: near-testnet
+    network: near-mainnet
     source:
-      account: usdt.tokens-pruebas.testnet
-      startBlock: 142539318
+      account: usdt.tether-token.near
+      startBlock: 105477592
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
@@ -55,10 +55,10 @@ dataSources:
       file: toke-usdt\toke-usdt.wasm
   - kind: near
     name: toke-usdc
-    network: near-testnet
+    network: near-mainnet
     source:
-      account: usdc.tokens-pruebas.testnet
-      startBlock: 142539713
+      account: a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near
+      startBlock: 105477592
     mapping:
       apiVersion: 0.0.5
       language: wasm/assemblyscript

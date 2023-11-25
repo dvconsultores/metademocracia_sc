@@ -1,0 +1,1 @@
+graph deploy dvconsultores/metademocracia --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ --access-token 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

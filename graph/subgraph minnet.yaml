@@ -6,7 +6,7 @@ features:
 dataSources:
   - kind: near
     name: metademocracia
-    network: near-mainnet
+    network: near-testnet
     source:
       account: "daov1.metademocracia_dao.near"
       startBlock: 105477143
@@ -23,7 +23,7 @@ dataSources:
       file: ./src/mapping_1.ts
   - kind: near
     name: metademocracia-nft
-    network: near-mainnet
+    network: near-testnet
     source:
       account: "nftv1.metademocracia_dao.near"
       startBlock: 105477553
@@ -38,7 +38,7 @@ dataSources:
       file: ./src/mapping_2.ts
   - kind: near
     name: toke-usdt
-    network: near-mainnet
+    network: near-testnet
     source:
       account: "usdt.tether-token.near"
       startBlock: 105477592
@@ -55,7 +55,7 @@ dataSources:
       file: ./src/mapping_usdt.ts
   - kind: near
     name: toke-usdc
-    network: near-mainnet
+    network: near-testnet
     source:
       account: "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near"
       startBlock: 105477592
