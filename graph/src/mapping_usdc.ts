@@ -61,7 +61,7 @@ function handleAction(
         
         if (!new_owner_id || !amount || !old_owner_id) return
         
-        if(new_owner_id.toString() == "daov5.metademocracia.testnet") {
+        if(new_owner_id.toString() == "daov1.metademocracia_dao.near") {
 
           const token_id: string = "USDC";
 

@@ -655,18 +655,18 @@ impl Contract {
         let title: String = format!("{} {} {} {} {}", token_series.metadata.title.unwrap().clone(), TITLE_DELIMETER, token_series_id, TITLE_DELIMETER, (num_tokens + 1).to_string());
         
         let token_metadata = Some(TokenMetadata {
-            title: Some(title),          
-            description: token_series.metadata.description.clone(),   
-            media: token_series.metadata.media.clone(),
-            media_hash: token_series.metadata.media_hash, 
-            copies: token_series.metadata.copies, 
-            issued_at: Some(env::block_timestamp().to_string()), 
-            expires_at: token_series.metadata.expires_at, 
-            starts_at: token_series.metadata.starts_at, 
-            updated_at: token_series.metadata.updated_at, 
-            extra: token_series.metadata.extra.clone(), 
-            reference: token_series.metadata.reference.clone(),
-            reference_hash: token_series.metadata.reference_hash, 
+            title: Some(title),
+            description: None,    // free-form description
+            media: None, // URL to associated media, preferably to decentralized, content-addressed storage
+            media_hash: None, // Base64-encoded sha256 hash of content referenced by the `media` field. Required if `media` is included.
+            copies: None, // number of copies of this set of metadata in existence when token was minted.
+            issued_at: Some(env::block_timestamp().to_string()), // ISO 8601 datetime when token was issued or minted
+            expires_at: None, // ISO 8601 datetime when token expires
+            starts_at: None, // ISO 8601 datetime when token starts being valid
+            updated_at: None, // ISO 8601 datetime when token was last updated
+            extra: None, // anything extra the NFT wants to store on-chain. Can be stringified JSON.
+            reference: None, // URL to an off-chain JSON file with more info.
+            reference_hash: None,
         });
 
         let token_owner_id: AccountId = receiver_id.clone();
@@ -797,7 +797,7 @@ impl Contract {
     }
 
 
-    pub fn nft_token(&self, token_id: TokenId) -> Option<TokenCustom> {
+    /*pub fn nft_token(&self, token_id: TokenId) -> Option<TokenCustom> {
         let owner_id = self.tokens.owner_by_id.get(&token_id)?;
         let approved_account_ids = self
             .tokens
@@ -818,8 +818,41 @@ impl Contract {
             approved_account_ids,
             royalty: Some(royalty)
         })
-    }
+    }*/
 
+    
+    pub fn nft_token(&self, token_id: TokenId) -> Option<TokenCustom> {
+        let owner_id = self.tokens.owner_by_id.get(&token_id)?;
+        let approved_account_ids = self
+            .tokens
+            .approvals_by_id
+            .as_ref()
+            .and_then(|by_id| by_id.get(&token_id).or_else(|| Some(HashMap::new())));
+
+        // CUSTOM (switch metadata for the token_series metadata)
+        let mut token_id_iter = token_id.split(TOKEN_DELIMETER);
+        let token_series_id = token_id_iter.next().unwrap().parse().unwrap();
+        let data_token_serie_id = self.token_series_by_id.get(&token_series_id).unwrap();
+        
+        let series_metadata = data_token_serie_id.metadata;
+        let royalty = data_token_serie_id.royalty;
+
+        let mut token_metadata = self.tokens.token_metadata_by_id.as_ref().unwrap().get(&token_id).unwrap();
+
+        token_metadata.reference = series_metadata.reference;
+        token_metadata.description = series_metadata.description;
+        token_metadata.media = series_metadata.media;
+        token_metadata.copies = series_metadata.copies;
+        token_metadata.extra = series_metadata.extra;
+
+        Some(TokenCustom {
+            token_id,
+            owner_id,
+            metadata: Some(token_metadata),
+            approved_account_ids,
+            royalty: Some(royalty)
+        })
+    }
 
 
     pub fn nft_transfer_unsafe(
