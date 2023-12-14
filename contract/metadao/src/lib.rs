@@ -25,8 +25,8 @@ pub const ONE_YOCTO_NEAR: Balance = 1;
 pub const GAS_FOR_FT_TRANSFER: Gas = Gas(10_000_000_000_000);
 pub const BASE_GAS: Gas = Gas(3_000_000_000_000);
 
-pub const CONTRACT_NFT: &str = "nftv3.metademocracia.testnet";
-// pub const CONTRACT_NFT: &str = "nftv1.metademocracia_dao.near";
+// pub const CONTRACT_NFT: &str = "nftv3.metademocracia.testnet";
+pub const CONTRACT_NFT: &str = "nftv1.metademocracia_dao.near";
 
 
 #[ext_contract(ext_self)]

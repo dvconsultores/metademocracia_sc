@@ -93,7 +93,7 @@ pub fn default_policy(council: Vec<AccountId>) -> Policy {
   };
   let proposal_bond_default: U128 = U128(10u128.pow(22));
   let proposal_period_default: U64 = U64(1_000_000_000 * 60 * 60 * 24 * 7);
-  
+
   for kind in proposal_kind.iter() {
     vote_policy.insert(kind.to_string(), vote_policy_default.clone());
     proposal_bond.insert(kind.to_string(), proposal_bond_default);
@@ -259,23 +259,49 @@ impl Policy {
       );
       let proposal_period: U64 = *self.proposal_period.get(&proposal.kind.to_label().to_string()).expect("ERR_NOT_PROPOSAL_PERIOD");
 
-      if proposal.submission_time.0 + proposal_period.0 < env::block_timestamp() {
+      /*if proposal.submission_time.0 + proposal_period.0 < env::block_timestamp() {
           // Proposal expired.
           return ProposalStatus::Expired;
-      };
+      };*/
       
-      let vote_policy = self.vote_policy.get(&proposal.kind.to_label().to_string()).expect("ERR_NOT_VOTE_POLICY");
+      if proposal.submission_time.0 + proposal_period.0 > env::block_timestamp() {
+        return proposal.status.clone()
+      }
 
-      let percentage: f64 = vote_policy.percentage;
+      // let vote_policy = self.vote_policy.get(&proposal.kind.to_label().to_string()).expect("ERR_NOT_VOTE_POLICY");
+
+      // let percentage: f64 = vote_policy.percentage;
 
       // Check if there is anything voted above the threshold specified by policy for given role.
       let actions: Vec<Action>  = vec![Action::VoteApprove, Action::VoteReject, Action::VoteRemove];
+      let mut total_vote: f64 = 0.0; 
 
       for action in actions.iter() {
         let vote_counts = proposal.vote_counts.get(&action).unwrap_or(0u128);
-        let percentage_vote: f64 = ((vote_counts as f64) / (members as f64)) * 100.0;
+        total_vote += vote_counts as f64;
+      
+      }
+
+      let vote_required: f64 = (total_vote * 0.5) + 1.0;
+      for action in actions.iter() {
+        let vote_counts = proposal.vote_counts.get(&action).unwrap_or(0u128);
+        // let percentage_vote: f64 = ((vote_counts as f64) / (members as f64)) * 100.0;
         
+
         match action {
+          Action::VoteApprove => if (vote_counts as f64) >= vote_required { 
+            let mut status_return = proposal.status.clone();
+            if admin_appoved {
+              status_return = ProposalStatus::Approved
+            }
+            return status_return
+          },
+          Action::VoteReject => if (vote_counts as f64) >= vote_required { return ProposalStatus::Rejected},
+          Action::VoteRemove => if (vote_counts as f64) >= vote_required { return ProposalStatus::Removed},
+          _ => continue
+        }
+        
+        /*match action {
           Action::VoteApprove => if percentage_vote >= percentage { 
             let mut status_return = proposal.status.clone();
             if admin_appoved {
@@ -286,7 +312,7 @@ impl Policy {
           Action::VoteReject => if percentage_vote >= percentage { return ProposalStatus::Rejected},
           Action::VoteRemove => if percentage_vote >= percentage { return ProposalStatus::Removed},
           _ => continue
-        }
+        }*/
       }
       
       proposal.status.clone()

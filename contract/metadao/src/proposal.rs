@@ -468,31 +468,35 @@ impl Contract {
         , action
         , memo
         , env::current_account_id()
-        , 0
-        , Gas(200_000_000_000_000)
+        , 10000000000000000000000000
+        , Gas(20_000_000_000_000)
     ));
-
   }
 
 
-  #[private]
-  pub fn on_update_proposal(&mut self, id: u128, action: Action, memo: Option<String>) {
+
+  #[private] 
+  #[payable]
+  pub fn on_update_proposal(&mut self, id: u128, action: Action, memo: Option<String>) -> Option<u128> {
     assert_eq!(env::promise_results_count(), 1, "ERR_UNEXPECTED_CALLBACK_PROMISES");
     match env::promise_result(0) {
-        PromiseResult::NotReady => unreachable!(),
+        PromiseResult::NotReady => {unreachable!(); None},
         PromiseResult::Successful(val) => {
             if let Ok(is_allowlisted) = near_sdk::serde_json::from_slice::<U128>(&val) {
-              self._internal_callback_update_proposal(id, &action, memo, is_allowlisted.0);
+              Some(self._internal_callback_update_proposal(id, &action, memo, is_allowlisted.0))
           } else {
-              env::panic_str("ERR_WRONG_VAL_RECEIVED")
+              env::panic_str("ERR_WRONG_VAL_RECEIVED");
+              None
           }
         },
-        PromiseResult::Failed => env::panic_str("ERR_CALL_FAILED"),
+        PromiseResult::Failed => {env::panic_str("ERR_CALL_FAILED"); None },
     }
   }
 
   
-  fn _internal_callback_update_proposal(&mut self, id: u128, action: &Action, memo: Option<String>, members: u128)  {
+  fn _internal_callback_update_proposal(&mut self, id: u128, action: &Action, memo: Option<String>, members: u128) -> u128 {
+    let initial_storage_usage = env::storage_usage();
+
     let mut proposal: Proposal = self.proposals.get(&id).expect("ERR_NO_PROPOSAL");
     let mut typeAction = "";
     
@@ -586,6 +590,8 @@ impl Contract {
         "admin_appoved": proposal.admin_appoved,
       }).to_string(),
     );
+
+    refund_deposit(env::storage_usage() - initial_storage_usage, 0)
   }
 
 
@@ -630,6 +636,12 @@ impl Contract {
   }
 }
 
+
+fn refund_deposit(storage_used: u64, extra_spend: Balance) -> u128 {
+  let required_cost = env::storage_byte_cost() * Balance::from(storage_used);
+  
+  required_cost
+}
 
 /*
   {

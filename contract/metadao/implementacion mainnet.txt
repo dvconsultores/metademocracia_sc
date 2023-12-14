@@ -39,6 +39,10 @@ near view daov1.metademocracia_dao.near get_locked_amount
 
 
 
+NEAR_ENV=mainnet  near call daov1.metademocracia_dao.near update_proposal '{"id": 5, "action": "VoteApprove"}' --accountId 18dfa77d6dba0cdc04a20c61f477b0d315b5823280d758a72144081351282c0e --gas 200000000000000
+
+NEAR_ENV=mainnet  near call daov1.metademocracia_dao.near update_proposal '{"id": 5, "action": "VoteApprove"}' --accountId hrpalencia.near --gas 200000000000000
+
 
 ------------------------------------------- nft -------------------------------------------------------------------------------- 
 
@@ -68,9 +72,24 @@ NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_seri
 
 NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "2ac6315b32761695e60ee8d08f0a8c0430e3d345fd63012aaea3fc446e5d15f2"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
 
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "18dfa77d6dba0cdc04a20c61f477b0d315b5823280d758a72144081351282c0e"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+
+
+
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "6ee045fbe6470676a1a82e8e8ffc97a9251fb84fe88548e41e71c8a356313848"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "ff3c0ce0409377aff8084ba71a9dcb033c9c82c64fbe3724ef925a2c9d097272"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "0f90ea9ae0e3292ef0ff154b65e4d3235f686aae56e12e5333824a9a9cdcb981"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "c241b70f49a7e41a442ca33313e8496be6de80a0197f437c4b1f73474f6a2df3"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "ccab427c047bf321744cae614077e2d9fbe9f787bd358cda2622584dee99c7ad"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint '{"token_series_id": "1", "receiver_id": "a5f8a0219415d064c4b54c31a0d9a02487a67ae163f9fa4ce03bb7bff271c25f"}' --accountId nftv1.metademocracia_dao.near --depositYocto 9570000000000000000000
+
+
+
 
 
 NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint_for '{"token_series_id": "1", "nft_quantity": 40, "receiver_id": "ceballos.near"}' --accountId nftv1.metademocracia_dao.near --depositYocto 229600000000000000000000 --gas 300000000000000
+
+NEAR_ENV=mainnet  near call nftv1.metademocracia_dao.near nft_mint_for '{"token_series_id": "1", "nft_quantity": 20, "receiver_id": "andresdom.near"}' --accountId nftv1.metademocracia_dao.near --depositYocto 229600000000000000000000 --gas 300000000000000
 
 
 
