@@ -149,7 +149,7 @@ function handleAction(
 
         if (!id || !type || !action || !status || !sender_id) return;
         
-        if(type.toString() == "vote") {
+        if(type.toString() == "vote" || action.toString() == "Finalize") {
           let idVote = id.toString() + sender_id.toString();
           let vote = Vote.load(idVote);
 

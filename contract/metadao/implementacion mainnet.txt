@@ -16,6 +16,8 @@ NEAR_ENV=mainnet near call daov1.metademocracia_dao.near set_admin '{"user_id": 
 NEAR_ENV=mainnet near call daov1.metademocracia_dao.near set_admin '{"user_id": "fritzwagner.near"}' --accountId daov1.metademocracia_dao.near
 
 
+NEAR_ENV=mainnet near call daov1.metademocracia_dao.near update_proposal '{"id": 2, "action": "Finalize"}' --accountId hrpalencia.near --gas 36000000000000
+
 
 
 near call daov1.metademocracia_dao.near set_proposal '{"data": { "title": "primera propuesta", "description": "probando la propuesta de transferencia de fondos", "proponent": "hpalencia.testnet", "kind": { "Transfer": { "token_id": null, "receiver_id": "hpalencia.testnet", "amount": "1000000000000000000000000" } }, "link": "https://link" } }' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
@@ -32,6 +34,11 @@ near call daov1.metademocracia_dao.near prueba --accountId hpalencia.testnet --g
 near call daov1.metademocracia_dao.near set_proposal '{"data": { "title": "propuesta", "description": "probando la propuesta de transferencia de fondos", "proponent": "hpalencia.testnet", "kind": { "Transfer": { "token_id": null, "receiver_id": "hpalencia.testnet", "amount": "1000000000000000000000000" } }, "link": "https://link" } }' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
 
 near call daov1.metademocracia_dao.near update_proposal '{"id": 1, "action": "VoteApprove"}' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
+
+
+near call daov1.metademocracia_dao.near update_proposal '{"id": 2, "action": "Finalize"}' --accountId hpalencia.testnet --deposit 1 --gas 300000000000000
+
+
 
 near view daov1.metademocracia_dao.near get_locked_storage_amount
 
