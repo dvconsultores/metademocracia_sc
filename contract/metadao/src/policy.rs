@@ -250,13 +250,13 @@ impl Policy {
       members: u128,
       admin_appoved: bool,
   ) -> ProposalStatus {
-      assert!(
+      /*assert!(
           matches!(
               proposal.status,
               ProposalStatus::InProgress | ProposalStatus::Failed
           ),
           "ERR_PROPOSAL_NOT_IN_PROGRESS"
-      );
+      );*/
       let proposal_period: U64 = *self.proposal_period.get(&proposal.kind.to_label().to_string()).expect("ERR_NOT_PROPOSAL_PERIOD");
 
       /*if proposal.submission_time.0 + proposal_period.0 < env::block_timestamp() {

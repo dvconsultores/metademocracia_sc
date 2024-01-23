@@ -208,7 +208,7 @@ impl Contract {
 
   fn internal_return_bonds(&mut self, policy: &Policy, proposal: &Proposal) -> Promise {
     let proposal_bond = policy.get_proposal_bond(&proposal.kind.to_label().to_string());
-    self.locked_amount -= proposal_bond.0; 
+    //self.locked_amount -= proposal_bond.0; 
     Promise::new(proposal.proposer.clone()).transfer(proposal_bond.0)
   }
 
@@ -468,7 +468,7 @@ impl Contract {
         , action
         , memo
         , env::current_account_id()
-        , 10000000000000000000000000
+        , 1000000000000000000000000
         , Gas(20_000_000_000_000)
     ));
   }
@@ -477,38 +477,41 @@ impl Contract {
 
   #[private] 
   #[payable]
-  pub fn on_update_proposal(&mut self, id: u128, action: Action, memo: Option<String>) -> Option<u128> {
+  pub fn on_update_proposal(&mut self, id: u128, action: Action, memo: Option<String>) {
     assert_eq!(env::promise_results_count(), 1, "ERR_UNEXPECTED_CALLBACK_PROMISES");
     match env::promise_result(0) {
-        PromiseResult::NotReady => {unreachable!(); None},
+        PromiseResult::NotReady => { unreachable!(); },
         PromiseResult::Successful(val) => {
             if let Ok(is_allowlisted) = near_sdk::serde_json::from_slice::<U128>(&val) {
-              Some(self._internal_callback_update_proposal(id, &action, memo, is_allowlisted.0))
+              self._internal_callback_update_proposal(id, &action, memo, is_allowlisted.0);
           } else {
               env::panic_str("ERR_WRONG_VAL_RECEIVED");
-              None
           }
         },
-        PromiseResult::Failed => {env::panic_str("ERR_CALL_FAILED"); None },
+        PromiseResult::Failed => { env::panic_str("ERR_CALL_FAILED"); },
     }
   }
 
   
-  fn _internal_callback_update_proposal(&mut self, id: u128, action: &Action, memo: Option<String>, members: u128) -> u128 {
-    let initial_storage_usage = env::storage_usage();
-
+  fn _internal_callback_update_proposal(&mut self, id: u128, action: &Action, memo: Option<String>, members: u128) {
     let mut proposal: Proposal = self.proposals.get(&id).expect("ERR_NO_PROPOSAL");
     let mut typeAction = "";
+
+    
     
     let sender_id = env::signer_account_id();
     let policy = self.policy.get().unwrap().to_policy();
     // Check permissions for the given action.
-    let allowed =
+    
+    /*let allowed =
         policy.check_permission(sender_id.clone(), &proposal.kind, action);
-    assert!(allowed, "ERR_PERMISSION_DENIED");
+    assert!(allowed, "ERR_PERMISSION_DENIED");*/
     
+    if proposal.status == ProposalStatus::Approved || proposal.status == ProposalStatus::Rejected || proposal.status == ProposalStatus::Removed {
+      self.proposals.remove(&id);
     
-    let update = match action {
+    } else {
+      let update = match action {
         Action::AddProposal => env::panic_str("ERR_WRONG_ACTION"),
         Action::RemoveProposal => {
             self.proposals.remove(&id);
@@ -542,7 +545,7 @@ impl Contract {
                 true
             } else if proposal.status == ProposalStatus::Removed {
                 self.internal_reject_proposal(&policy, &proposal, false);
-                self.proposals.remove(&id);
+                //self.proposals.remove(&id);
                 false
             } else if proposal.status == ProposalStatus::Rejected {
                 self.internal_reject_proposal(&policy, &proposal, true);
@@ -574,24 +577,26 @@ impl Contract {
             }
             true
         }
-    };
-    if update {
-        self.proposals.insert(&id, &proposal);
+      };
+      if proposal.status == ProposalStatus::Approved || proposal.status == ProposalStatus::Rejected || proposal.status == ProposalStatus::Removed {
+        self.proposals.remove(&id);
+      } else if update {
+          self.proposals.insert(&id, &proposal);
+      }
+
+      env::log_str(
+        &json!({
+          "id": id.to_string(),
+          "type": typeAction,
+          "action": action,
+          "status": proposal.status,
+          "memo": memo.clone(),
+          "sender_id": sender_id.to_string(),
+          "admin_appoved": proposal.admin_appoved,
+        }).to_string(),
+      );
     }
 
-    env::log_str(
-      &json!({
-        "id": id.to_string(),
-        "type": typeAction,
-        "action": action,
-        "status": proposal.status,
-        "memo": memo.clone(),
-        "sender_id": sender_id.to_string(),
-        "admin_appoved": proposal.admin_appoved,
-      }).to_string(),
-    );
-
-    refund_deposit(env::storage_usage() - initial_storage_usage, 0)
   }
 
 
@@ -637,11 +642,6 @@ impl Contract {
 }
 
 
-fn refund_deposit(storage_used: u64, extra_spend: Balance) -> u128 {
-  let required_cost = env::storage_byte_cost() * Balance::from(storage_used);
-  
-  required_cost
-}
 
 /*
   {

@@ -149,7 +149,7 @@ function handleAction(
 
         if (!id || !type || !action || !status || !sender_id) return;
         
-        if(type.toString() == "vote" || action.toString() == "Finalize") {
+        if(action.toString() == "Finalize" || action.toString() == "VoteApprove" || action.toString() == "VoteReject" || action.toString() == "Approved") {
           let idVote = id.toString() + sender_id.toString();
           let vote = Vote.load(idVote);
 
@@ -180,17 +180,35 @@ function handleAction(
               proposal.save();
             }
 
-            if(status.toString() != "InProgress" && status.toString() != "Failed") {
+            /*if(status.toString() != "InProgress" && status.toString() != "Failed") {
               let proposaldata = Proposaldata.load("1");
               if(proposaldata) {
                 proposaldata.proposal_actives = proposaldata.proposal_actives.minus(BigInt.fromI32(1));
 
                 proposaldata.save();
               }
-            }
+            }*/
             
             
             vote.save();
+          }
+
+          let proposal = Proposal.load(id.toString());
+          if (proposal) {
+            proposal.status = status.toString();
+            if(status.toString() == "Approved") {
+              proposal.approval_date = BigInt.fromU64(blockHeader.timestampNanosec);
+            }
+            proposal.save();
+          }
+
+          if(status.toString() != "InProgress" && status.toString() != "Failed") {
+            let proposaldata = Proposaldata.load("1");
+            if(proposaldata) {
+              proposaldata.proposal_actives = proposaldata.proposal_actives.minus(BigInt.fromI32(1));
+
+              proposaldata.save();
+            }
           }
           
         }
