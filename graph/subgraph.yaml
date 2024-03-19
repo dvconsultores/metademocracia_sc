@@ -6,12 +6,12 @@ features:
 dataSources:
   - kind: near
     name: metademocracia
-    network: near-mainnet
+    network: near-testnet
     source:
-      account: "daov1.metademocracia_dao.near"
-      startBlock: 105477143
+      account: "daov5.metademocracia.testnet"
+      startBlock: 144741287
     mapping:
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Proposaldata
@@ -23,12 +23,12 @@ dataSources:
       file: ./src/mapping_1.ts
   - kind: near
     name: metademocracia-nft
-    network: near-mainnet
+    network: near-testnet
     source:
-      account: "nftv1.metademocracia_dao.near"
-      startBlock: 105477553
+      account: "nftv3.metademocracia.testnet"
+      startBlock: 142416367
     mapping:
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Serie
@@ -38,12 +38,12 @@ dataSources:
       file: ./src/mapping_2.ts
   - kind: near
     name: toke-usdt
-    network: near-mainnet
+    network: near-testnet
     source:
-      account: "usdt.tether-token.near"
-      startBlock: 105477592
+      account: "usdt.tokens-pruebas.testnet"
+      startBlock: 142539318
     mapping:
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Delegation
@@ -55,12 +55,12 @@ dataSources:
       file: ./src/mapping_usdt.ts
   - kind: near
     name: toke-usdc
-    network: near-mainnet
+    network: near-testnet
     source:
-      account: "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near"
-      startBlock: 105477592
+      account: "usdc.tokens-pruebas.testnet"
+      startBlock: 142539713
     mapping:
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Delegation

@@ -70,13 +70,15 @@ type Datanft @entity {
   id: ID!
   total_Supply: BigInt!
   total_owners: BigInt!
-  owners: [Owners!]! @derivedFrom(field: "data_nft")
+  owners: [Owner!]! @derivedFrom(field: "data_nft")
 }
 
-type Owners @entity {
+type Owner @entity {
   id: ID!
   data_nft: Datanft!
+  total_mft: BigInt!
   owner_id: String!
+  votes: BigInt!
 }
 
 type Serie @entity {

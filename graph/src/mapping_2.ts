@@ -1,5 +1,5 @@
 import { near, BigInt, JSONValue, json, ipfs, log, TypedMap, Value, typeConversion, BigDecimal, bigInt, bigDecimal } from "@graphprotocol/graph-ts"
-import { Serie, Nft, Datanft, Owners } from "../generated/schema"
+import { Serie, Nft, Datanft, Owner } from "../generated/schema"
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
   const actions = receipt.receipt.actions;
@@ -232,7 +232,26 @@ function handleAction(
           datanft.total_owners = BigInt.fromI32(0);
         }
 
+        let owner = Owner.load(owner_id.toString())
+        if(!owner) {
+          owner = new Owner(owner_id.toString());
+          owner.data_nft = "1";
+          owner.owner_id = owner_id.toString();
+          owner.total_mft = BigInt.fromI32(0);
+          owner.votes = BigInt.fromI32(0);
+          // datanft.total_owners = datanft.total_owners.plus(BigInt.fromI32(1));
+        }
+
+        if(owner.total_mft.le(BigInt.fromI32(0))) {
+          datanft.total_owners = datanft.total_owners.plus(BigInt.fromI32(1));
+        }
+        owner.total_mft = owner.total_mft.plus(BigInt.fromI32(1));
+
         datanft.total_Supply = datanft.total_Supply.plus(BigInt.fromI32(1));
+
+        datanft.save();
+        owner.save();
+
 
         
       }
@@ -261,8 +280,10 @@ function handleAction(
       const data = eventArray[0].toObject()
       const tokenIds = data.get('token_ids')
       const new_owner_id = data.get('new_owner_id')
+      const old_owner_id = data.get('old_owner_id')
       
-      if (!tokenIds || !new_owner_id) return
+      
+      if (!tokenIds || !new_owner_id || !old_owner_id) return
       
       const ids:JSONValue[] = tokenIds.toArray()
       const tokenId = ids[0].toString()
@@ -273,6 +294,47 @@ function handleAction(
       if(nft) { 
         nft.owner_id = new_owner_id.toString() 
         nft.save()
+      }
+
+      //control miembros
+      let datanft = Datanft.load("1");
+      if(datanft) {
+        let oldOwner = Owner.load(old_owner_id.toString())
+        if(oldOwner) {
+          oldOwner.total_mft = oldOwner.total_mft.minus(BigInt.fromI32(1));
+
+          if(oldOwner.total_mft.le(BigInt.fromI32(0))) {
+            datanft.total_owners = datanft.total_owners.minus(BigInt.fromI32(1));
+          }
+          oldOwner.save();
+        }
+
+        
+        let newOwner = Owner.load(new_owner_id.toString())
+        if(!newOwner) {
+          newOwner = new Owner(new_owner_id.toString());
+          newOwner.data_nft = "1";
+          newOwner.owner_id = new_owner_id.toString();
+          newOwner.total_mft = BigInt.fromI32(0);
+          newOwner.votes = BigInt.fromI32(0);
+        } 
+
+        if(newOwner.total_mft.le(BigInt.fromI32(0))) {
+          let oldOwner = Owner.load(old_owner_id.toString())
+          if(oldOwner) {
+            if(oldOwner.total_mft.le(BigInt.fromI32(0))) {
+              datanft.total_owners = datanft.total_owners.plus(BigInt.fromI32(1));
+            }
+          }
+        }
+
+        newOwner.total_mft = newOwner.total_mft.plus(BigInt.fromI32(1));
+        
+
+        //datanft.total_Supply = datanft.total_Supply.plus(BigInt.fromI32(1));
+
+        datanft.save();
+        newOwner.save()
       }
 
     }

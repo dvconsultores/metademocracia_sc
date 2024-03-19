@@ -8,10 +8,10 @@ import {
   store,
   Bytes,
   BigInt,
-  BigDecimal
+  BigDecimal,
 } from "@graphprotocol/graph-ts";
 
-export class Datauser extends Entity {
+export class Proposaldata extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -19,175 +19,457 @@ export class Datauser extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Datauser entity without an ID");
+    assert(id != null, "Cannot save Proposaldata entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Datauser must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Proposaldata must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("Datauser", id.toString(), this);
+      store.set("Proposaldata", id.toString(), this);
     }
   }
 
-  static load(id: string): Datauser | null {
-    return changetype<Datauser | null>(store.get("Datauser", id));
+  static loadInBlock(id: string): Proposaldata | null {
+    return changetype<Proposaldata | null>(
+      store.get_in_block("Proposaldata", id),
+    );
+  }
+
+  static load(id: string): Proposaldata | null {
+    return changetype<Proposaldata | null>(store.get("Proposaldata", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
 
+  get proposal_actives(): BigInt {
+    let value = this.get("proposal_actives");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set proposal_actives(value: BigInt) {
+    this.set("proposal_actives", Value.fromBigInt(value));
+  }
+
+  get proposal_total(): BigInt {
+    let value = this.get("proposal_total");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set proposal_total(value: BigInt) {
+    this.set("proposal_total", Value.fromBigInt(value));
+  }
+
+  get roles(): string | null {
+    let value = this.get("roles");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set roles(value: string | null) {
+    if (!value) {
+      this.unset("roles");
+    } else {
+      this.set("roles", Value.fromString(<string>value));
+    }
+  }
+
+  get vote_policy(): string | null {
+    let value = this.get("vote_policy");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set vote_policy(value: string | null) {
+    if (!value) {
+      this.unset("vote_policy");
+    } else {
+      this.set("vote_policy", Value.fromString(<string>value));
+    }
+  }
+
+  get proposal_bond(): string | null {
+    let value = this.get("proposal_bond");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal_bond(value: string | null) {
+    if (!value) {
+      this.unset("proposal_bond");
+    } else {
+      this.set("proposal_bond", Value.fromString(<string>value));
+    }
+  }
+
+  get proposal_period(): string | null {
+    let value = this.get("proposal_period");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal_period(value: string | null) {
+    if (!value) {
+      this.unset("proposal_period");
+    } else {
+      this.set("proposal_period", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class Proposal extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Proposal entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Proposal must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Proposal", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Proposal | null {
+    return changetype<Proposal | null>(store.get_in_block("Proposal", id));
+  }
+
+  static load(id: string): Proposal | null {
+    return changetype<Proposal | null>(store.get("Proposal", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get title(): string {
+    let value = this.get("title");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set title(value: string) {
+    this.set("title", Value.fromString(value));
+  }
+
+  get description(): string {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string) {
+    this.set("description", Value.fromString(value));
+  }
+
+  get proposal_type(): string {
+    let value = this.get("proposal_type");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal_type(value: string) {
+    this.set("proposal_type", Value.fromString(value));
+  }
+
+  get kind(): string {
+    let value = this.get("kind");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set kind(value: string) {
+    this.set("kind", Value.fromString(value));
+  }
+
+  get proposer(): string {
+    let value = this.get("proposer");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposer(value: string) {
+    this.set("proposer", Value.fromString(value));
+  }
+
+  get submission_time(): BigInt {
+    let value = this.get("submission_time");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set submission_time(value: BigInt) {
+    this.set("submission_time", Value.fromBigInt(value));
+  }
+
+  get upvote(): BigInt {
+    let value = this.get("upvote");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set upvote(value: BigInt) {
+    this.set("upvote", Value.fromBigInt(value));
+  }
+
+  get downvote(): BigInt {
+    let value = this.get("downvote");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set downvote(value: BigInt) {
+    this.set("downvote", Value.fromBigInt(value));
+  }
+
+  get vote(): VoteLoader {
+    return new VoteLoader("Proposal", this.get("id")!.toString(), "vote");
+  }
+
+  get status(): string {
+    let value = this.get("status");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
+  }
+
+  get approval_date(): BigInt | null {
+    let value = this.get("approval_date");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set approval_date(value: BigInt | null) {
+    if (!value) {
+      this.unset("approval_date");
+    } else {
+      this.set("approval_date", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get creation_date(): BigInt {
+    let value = this.get("creation_date");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set creation_date(value: BigInt) {
+    this.set("creation_date", Value.fromBigInt(value));
+  }
+
+  get user_creation(): string {
+    let value = this.get("user_creation");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set user_creation(value: string) {
+    this.set("user_creation", Value.fromString(value));
+  }
+
+  get link(): string {
+    let value = this.get("link");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set link(value: string) {
+    this.set("link", Value.fromString(value));
+  }
+
+  get admin_appoved(): boolean {
+    let value = this.get("admin_appoved");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set admin_appoved(value: boolean) {
+    this.set("admin_appoved", Value.fromBoolean(value));
+  }
+}
+
+export class Vote extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Vote entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Vote must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Vote", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Vote | null {
+    return changetype<Vote | null>(store.get_in_block("Vote", id));
+  }
+
+  static load(id: string): Vote | null {
+    return changetype<Vote | null>(store.get("Vote", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get proposal(): string {
+    let value = this.get("proposal");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal(value: string) {
+    this.set("proposal", Value.fromString(value));
+  }
+
   get user_id(): string {
     let value = this.get("user_id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set user_id(value: string) {
     this.set("user_id", Value.fromString(value));
   }
 
-  get name(): string {
-    let value = this.get("name");
-    return value!.toString();
+  get vote(): string {
+    let value = this.get("vote");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set name(value: string) {
-    this.set("name", Value.fromString(value));
+  set vote(value: string) {
+    this.set("vote", Value.fromString(value));
   }
 
-  get last_name(): string {
-    let value = this.get("last_name");
-    return value!.toString();
+  get date_time(): BigInt {
+    let value = this.get("date_time");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set last_name(value: string) {
-    this.set("last_name", Value.fromString(value));
-  }
-
-  get phone(): string {
-    let value = this.get("phone");
-    return value!.toString();
-  }
-
-  set phone(value: string) {
-    this.set("phone", Value.fromString(value));
-  }
-
-  get email(): string {
-    let value = this.get("email");
-    return value!.toString();
-  }
-
-  set email(value: string) {
-    this.set("email", Value.fromString(value));
-  }
-
-  get country(): string {
-    let value = this.get("country");
-    return value!.toString();
-  }
-
-  set country(value: string) {
-    this.set("country", Value.fromString(value));
-  }
-
-  get mediator(): boolean {
-    let value = this.get("mediator");
-    return value!.toBoolean();
-  }
-
-  set mediator(value: boolean) {
-    this.set("mediator", Value.fromBoolean(value));
-  }
-
-  get is_active(): boolean {
-    let value = this.get("is_active");
-    return value!.toBoolean();
-  }
-
-  set is_active(value: boolean) {
-    this.set("is_active", Value.fromBoolean(value));
-  }
-
-  get badge(): string {
-    let value = this.get("badge");
-    return value!.toString();
-  }
-
-  set badge(value: string) {
-    this.set("badge", Value.fromString(value));
-  }
-
-  get is_merchant(): boolean {
-    let value = this.get("is_merchant");
-    return value!.toBoolean();
-  }
-
-  set is_merchant(value: boolean) {
-    this.set("is_merchant", Value.fromBoolean(value));
-  }
-
-  get campo1(): string {
-    let value = this.get("campo1");
-    return value!.toString();
-  }
-
-  set campo1(value: string) {
-    this.set("campo1", Value.fromString(value));
-  }
-
-  get campo2(): string {
-    let value = this.get("campo2");
-    return value!.toString();
-  }
-
-  set campo2(value: string) {
-    this.set("campo2", Value.fromString(value));
-  }
-
-  get campo3(): string {
-    let value = this.get("campo3");
-    return value!.toString();
-  }
-
-  set campo3(value: string) {
-    this.set("campo3", Value.fromString(value));
-  }
-
-  get total_orders(): i32 {
-    let value = this.get("total_orders");
-    return value!.toI32();
-  }
-
-  set total_orders(value: i32) {
-    this.set("total_orders", Value.fromI32(value));
-  }
-
-  get orders_completed(): i32 {
-    let value = this.get("orders_completed");
-    return value!.toI32();
-  }
-
-  set orders_completed(value: i32) {
-    this.set("orders_completed", Value.fromI32(value));
-  }
-
-  get percentaje_completion(): string {
-    let value = this.get("percentaje_completion");
-    return value!.toString();
-  }
-
-  set percentaje_completion(value: string) {
-    this.set("percentaje_completion", Value.fromString(value));
+  set date_time(value: BigInt) {
+    this.set("date_time", Value.fromBigInt(value));
   }
 }
 
-export class Paymentmethod extends Entity {
+export class Delegation extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -195,436 +477,346 @@ export class Paymentmethod extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Paymentmethod entity without an ID");
+    assert(id != null, "Cannot save Delegation entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Paymentmethod must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Delegation must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("Paymentmethod", id.toString(), this);
+      store.set("Delegation", id.toString(), this);
     }
   }
 
-  static load(id: string): Paymentmethod | null {
-    return changetype<Paymentmethod | null>(store.get("Paymentmethod", id));
+  static loadInBlock(id: string): Delegation | null {
+    return changetype<Delegation | null>(store.get_in_block("Delegation", id));
+  }
+
+  static load(id: string): Delegation | null {
+    return changetype<Delegation | null>(store.get("Delegation", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
 
-  get paymentmethoduser(): Array<string> {
-    let value = this.get("paymentmethoduser");
-    return value!.toStringArray();
-  }
-
-  set paymentmethoduser(value: Array<string>) {
-    this.set("paymentmethoduser", Value.fromStringArray(value));
-  }
-
-  get payment_method(): string {
-    let value = this.get("payment_method");
-    return value!.toString();
-  }
-
-  set payment_method(value: string) {
-    this.set("payment_method", Value.fromString(value));
-  }
-
-  get input1(): string {
-    let value = this.get("input1");
-    return value!.toString();
-  }
-
-  set input1(value: string) {
-    this.set("input1", Value.fromString(value));
-  }
-
-  get input2(): string {
-    let value = this.get("input2");
-    return value!.toString();
-  }
-
-  set input2(value: string) {
-    this.set("input2", Value.fromString(value));
-  }
-
-  get input3(): string {
-    let value = this.get("input3");
-    return value!.toString();
-  }
-
-  set input3(value: string) {
-    this.set("input3", Value.fromString(value));
-  }
-
-  get input4(): string {
-    let value = this.get("input4");
-    return value!.toString();
-  }
-
-  set input4(value: string) {
-    this.set("input4", Value.fromString(value));
-  }
-
-  get input5(): string {
-    let value = this.get("input5");
-    return value!.toString();
-  }
-
-  set input5(value: string) {
-    this.set("input5", Value.fromString(value));
-  }
-}
-
-export class Fiatmethod extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Fiatmethod entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Fiatmethod must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("Fiatmethod", id.toString(), this);
-    }
-  }
-
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Paymentmethod entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Paymentmethod must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Fiatmethod", id.toString());
-    }
-  }
-
-  static load(id: string): Fiatmethod | null {
-    return changetype<Fiatmethod | null>(store.get("Fiatmethod", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get fiat_method(): string {
-    let value = this.get("fiat_method");
-    return value!.toString();
-  }
-
-  set fiat_method(value: string) {
-    this.set("fiat_method", Value.fromString(value));
-  }
-
-  get flagcdn(): string {
-    let value = this.get("flagcdn");
-    return value!.toString();
-  }
-
-  set flagcdn(value: string) {
-    this.set("flagcdn", Value.fromString(value));
-  }
-}
-
-
-export class Paymentmethoduser extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Paymentmethoduser entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Paymentmethoduser must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("Paymentmethoduser", id.toString(), this);
-    }
-  }
-
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Paymentmethoduser entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Paymentmethoduser must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Paymentmethoduser", id.toString());
-    }
-  }
-
-  static load(id: string): Paymentmethoduser | null {
-    return changetype<Paymentmethoduser | null>(
-      store.get("Paymentmethoduser", id)
+  get delegators(): DelegatorLoader {
+    return new DelegatorLoader(
+      "Delegation",
+      this.get("id")!.toString(),
+      "delegators",
     );
   }
 
+  get history(): DelegationhistLoader {
+    return new DelegationhistLoader(
+      "Delegation",
+      this.get("id")!.toString(),
+      "history",
+    );
+  }
+
+  get total_amount(): BigInt {
+    let value = this.get("total_amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set total_amount(value: BigInt) {
+    this.set("total_amount", Value.fromBigInt(value));
+  }
+}
+
+export class Delegationhist extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Delegationhist entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Delegationhist must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Delegationhist", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Delegationhist | null {
+    return changetype<Delegationhist | null>(
+      store.get_in_block("Delegationhist", id),
+    );
+  }
+
+  static load(id: string): Delegationhist | null {
+    return changetype<Delegationhist | null>(store.get("Delegationhist", id));
+  }
+
   get id(): string {
     let value = this.get("id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get delegation(): string {
+    let value = this.get("delegation");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set delegation(value: string) {
+    this.set("delegation", Value.fromString(value));
+  }
+
+  get date_time(): BigInt {
+    let value = this.get("date_time");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set date_time(value: BigInt) {
+    this.set("date_time", Value.fromBigInt(value));
+  }
+
+  get delegator(): string {
+    let value = this.get("delegator");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set delegator(value: string) {
+    this.set("delegator", Value.fromString(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+}
+
+export class Delegator extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Delegator entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Delegator must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Delegator", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Delegator | null {
+    return changetype<Delegator | null>(store.get_in_block("Delegator", id));
+  }
+
+  static load(id: string): Delegator | null {
+    return changetype<Delegator | null>(store.get("Delegator", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get delegation(): string {
+    let value = this.get("delegation");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set delegation(value: string) {
+    this.set("delegation", Value.fromString(value));
+  }
+
+  get delegator(): string {
+    let value = this.get("delegator");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set delegator(value: string) {
+    this.set("delegator", Value.fromString(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+}
+
+export class Fundshist extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Fundshist entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Fundshist must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Fundshist", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Fundshist | null {
+    return changetype<Fundshist | null>(store.get_in_block("Fundshist", id));
+  }
+
+  static load(id: string): Fundshist | null {
+    return changetype<Fundshist | null>(store.get("Fundshist", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get token_id(): string {
+    let value = this.get("token_id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set token_id(value: string) {
+    this.set("token_id", Value.fromString(value));
   }
 
   get user_id(): string {
     let value = this.get("user_id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set user_id(value: string) {
     this.set("user_id", Value.fromString(value));
   }
 
-  get payment_method(): string {
-    let value = this.get("payment_method");
-    return value!.toString();
-  }
-
-  set payment_method(value: string) {
-    this.set("payment_method", Value.fromString(value));
-  }
-
-  get input1(): string {
-    let value = this.get("input1");
-    return value!.toString();
-  }
-
-  set input1(value: string) {
-    this.set("input1", Value.fromString(value));
-  }
-
-  get input2(): string {
-    let value = this.get("input2");
-    return value!.toString();
-  }
-
-  set input2(value: string) {
-    this.set("input2", Value.fromString(value));
-  }
-
-  get input3(): string {
-    let value = this.get("input3");
-    return value!.toString();
-  }
-
-  set input3(value: string) {
-    this.set("input3", Value.fromString(value));
-  }
-
-  get input4(): string {
-    let value = this.get("input4");
-    return value!.toString();
-  }
-
-  set input4(value: string) {
-    this.set("input4", Value.fromString(value));
-  }
-
-  get input5(): string {
-    let value = this.get("input5");
-    return value!.toString();
-  }
-
-  set input5(value: string) {
-    this.set("input5", Value.fromString(value));
-  }
-}
-
-export class Offersbuy extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Offersbuy entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Offersbuy must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("Offersbuy", id.toString(), this);
+  get type(): string {
+    let value = this.get("type");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
     }
   }
 
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot delete Offersbuy entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Offersbuy must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Offersbuy", id.toString());
-    }
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
   }
 
-  static load(id: string): Offersbuy | null {
-    return changetype<Offersbuy | null>(store.get("Offersbuy", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get offer_id(): BigInt {
-    let value = this.get("offer_id");
-    return value!.toBigInt();
-  }
-
-  set offer_id(value: BigInt) {
-    this.set("offer_id", Value.fromBigInt(value));
-  }
-
-  get owner_id(): string {
-    let value = this.get("owner_id");
-    return value!.toString();
-  }
-
-  set owner_id(value: string) {
-    this.set("owner_id", Value.fromString(value));
-  }
-
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
-  }
-
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
-  }
-
-  get exchange_rate(): string {
-    let value = this.get("exchange_rate");
-    return value!.toString();
-  }
-
-  set exchange_rate(value: string) {
-    this.set("exchange_rate", Value.fromString(value));
-  }
-
-  get amount(): BigInt {
+  get amount(): BigDecimal {
     let value = this.get("amount");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigDecimal();
+    }
   }
 
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
+  set amount(value: BigDecimal) {
+    this.set("amount", Value.fromBigDecimal(value));
   }
 
-  get remaining_amount(): BigInt {
-    let value = this.get("remaining_amount");
-    return value!.toBigInt();
+  get date_time(): BigInt {
+    let value = this.get("date_time");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set remaining_amount(value: BigInt) {
-    this.set("remaining_amount", Value.fromBigInt(value));
-  }
-
-  get min_limit(): BigInt {
-    let value = this.get("min_limit");
-    return value!.toBigInt();
-  }
-
-  set min_limit(value: BigInt) {
-    this.set("min_limit", Value.fromBigInt(value));
-  }
-
-  get max_limit(): BigInt {
-    let value = this.get("max_limit");
-    return value!.toBigInt();
-  }
-
-  set max_limit(value: BigInt) {
-    this.set("max_limit", Value.fromBigInt(value));
-  }
-
-  get payment_method(): string {
-    let value = this.get("payment_method");
-    return value!.toString();
-  }
-
-  set payment_method(value: string) {
-    this.set("payment_method", Value.fromString(value));
-  }
-
-  get fiat_method(): BigInt {
-    let value = this.get("fiat_method");
-    return value!.toBigInt();
-  }
-
-  set fiat_method(value: BigInt) {
-    this.set("fiat_method", Value.fromBigInt(value));
-  }
-
-  get is_merchant(): boolean {
-    let value = this.get("is_merchant");
-    return value!.toBoolean();
-  }
-
-  set is_merchant(value: boolean) {
-    this.set("is_merchant", Value.fromBoolean(value));
-  }
-
-  get time(): BigInt {
-    let value = this.get("time");
-    return value!.toBigInt();
-  }
-
-  set time(value: BigInt) {
-    this.set("time", Value.fromBigInt(value));
-  }
-
-  get terms_conditions(): string {
-    let value = this.get("terms_conditions");
-    return value!.toString();
-  }
-
-  set terms_conditions(value: string) {
-    this.set("terms_conditions", Value.fromString(value));
-  }
-
-  get status(): i32 {
-    let value = this.get("status");
-    return value!.toI32();
-  }
-
-  set status(value: i32) {
-    this.set("status", Value.fromI32(value));
+  set date_time(value: BigInt) {
+    this.set("date_time", Value.fromBigInt(value));
   }
 }
 
-export class Offerssell extends Entity {
+export class Datanft extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -632,169 +824,69 @@ export class Offerssell extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Offerssell entity without an ID");
+    assert(id != null, "Cannot save Datanft entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Offerssell must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Datanft must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("Offerssell", id.toString(), this);
+      store.set("Datanft", id.toString(), this);
     }
   }
 
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot delete Offerssell entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Offerssell must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Offerssell", id.toString());
-    }
+  static loadInBlock(id: string): Datanft | null {
+    return changetype<Datanft | null>(store.get_in_block("Datanft", id));
   }
 
-  static load(id: string): Offerssell | null {
-    return changetype<Offerssell | null>(store.get("Offerssell", id));
+  static load(id: string): Datanft | null {
+    return changetype<Datanft | null>(store.get("Datanft", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
 
-  get offer_id(): BigInt {
-    let value = this.get("offer_id");
-    return value!.toBigInt();
+  get total_Supply(): BigInt {
+    let value = this.get("total_Supply");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set offer_id(value: BigInt) {
-    this.set("offer_id", Value.fromBigInt(value));
+  set total_Supply(value: BigInt) {
+    this.set("total_Supply", Value.fromBigInt(value));
   }
 
-  get owner_id(): string {
-    let value = this.get("owner_id");
-    return value!.toString();
+  get total_owners(): BigInt {
+    let value = this.get("total_owners");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set owner_id(value: string) {
-    this.set("owner_id", Value.fromString(value));
+  set total_owners(value: BigInt) {
+    this.set("total_owners", Value.fromBigInt(value));
   }
 
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
-  }
-
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
-  }
-
-  get exchange_rate(): string {
-    let value = this.get("exchange_rate");
-    return value!.toString();
-  }
-
-  set exchange_rate(value: string) {
-    this.set("exchange_rate", Value.fromString(value));
-  }
-
-  get amount(): BigInt {
-    let value = this.get("amount");
-    return value!.toBigInt();
-  }
-
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
-  }
-
-  get remaining_amount(): BigInt {
-    let value = this.get("remaining_amount");
-    return value!.toBigInt();
-  }
-
-  set remaining_amount(value: BigInt) {
-    this.set("remaining_amount", Value.fromBigInt(value));
-  }
-
-  get min_limit(): BigInt {
-    let value = this.get("min_limit");
-    return value!.toBigInt();
-  }
-
-  set min_limit(value: BigInt) {
-    this.set("min_limit", Value.fromBigInt(value));
-  }
-
-  get max_limit(): BigInt {
-    let value = this.get("max_limit");
-    return value!.toBigInt();
-  }
-
-  set max_limit(value: BigInt) {
-    this.set("max_limit", Value.fromBigInt(value));
-  }
-
-  get payment_method(): string {
-    let value = this.get("payment_method");
-    return value!.toString();
-  }
-
-  set payment_method(value: string) {
-    this.set("payment_method", Value.fromString(value));
-  }
-
-  get fiat_method(): BigInt {
-    let value = this.get("fiat_method");
-    return value!.toBigInt();
-  }
-
-  set fiat_method(value: BigInt) {
-    this.set("fiat_method", Value.fromBigInt(value));
-  }
-
-  get is_merchant(): boolean {
-    let value = this.get("is_merchant");
-    return value!.toBoolean();
-  }
-
-  set is_merchant(value: boolean) {
-    this.set("is_merchant", Value.fromBoolean(value));
-  }
-
-  get time(): BigInt {
-    let value = this.get("time");
-    return value!.toBigInt();
-  }
-
-  set time(value: BigInt) {
-    this.set("time", Value.fromBigInt(value));
-  }
-
-  get terms_conditions(): string {
-    let value = this.get("terms_conditions");
-    return value!.toString();
-  }
-
-  set terms_conditions(value: string) {
-    this.set("terms_conditions", Value.fromString(value));
-  }
-
-  get status(): i32 {
-    let value = this.get("status");
-    return value!.toI32();
-  }
-
-  set status(value: i32) {
-    this.set("status", Value.fromI32(value));
+  get owners(): OwnerLoader {
+    return new OwnerLoader("Datanft", this.get("id")!.toString(), "owners");
   }
 }
 
-export class Orderbuy extends Entity {
+export class Owner extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -802,205 +894,91 @@ export class Orderbuy extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Orderbuy entity without an ID");
+    assert(id != null, "Cannot save Owner entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Orderbuy must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Owner must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("Orderbuy", id.toString(), this);
+      store.set("Owner", id.toString(), this);
     }
   }
 
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot delete Orderbuy entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Orderbuy must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Orderbuy", id.toString());
-    }
+  static loadInBlock(id: string): Owner | null {
+    return changetype<Owner | null>(store.get_in_block("Owner", id));
   }
 
-  static load(id: string): Orderbuy | null {
-    return changetype<Orderbuy | null>(store.get("Orderbuy", id));
+  static load(id: string): Owner | null {
+    return changetype<Owner | null>(store.get("Owner", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
 
-  get offer_id(): BigInt {
-    let value = this.get("offer_id");
-    return value!.toBigInt();
+  get data_nft(): string {
+    let value = this.get("data_nft");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set offer_id(value: BigInt) {
-    this.set("offer_id", Value.fromBigInt(value));
+  set data_nft(value: string) {
+    this.set("data_nft", Value.fromString(value));
   }
 
-  get order_id(): BigInt {
-    let value = this.get("order_id");
-    return value!.toBigInt();
+  get total_mft(): BigInt {
+    let value = this.get("total_mft");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set order_id(value: BigInt) {
-    this.set("order_id", Value.fromBigInt(value));
+  set total_mft(value: BigInt) {
+    this.set("total_mft", Value.fromBigInt(value));
   }
 
   get owner_id(): string {
     let value = this.get("owner_id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set owner_id(value: string) {
     this.set("owner_id", Value.fromString(value));
   }
 
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
+  get votes(): BigInt {
+    let value = this.get("votes");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
-  }
-
-  get signer_id(): string {
-    let value = this.get("signer_id");
-    return value!.toString();
-  }
-
-  set signer_id(value: string) {
-    this.set("signer_id", Value.fromString(value));
-  }
-
-  get exchange_rate(): string {
-    let value = this.get("exchange_rate");
-    return value!.toString();
-  }
-
-  set exchange_rate(value: string) {
-    this.set("exchange_rate", Value.fromString(value));
-  }
-
-  get operation_amount(): BigInt {
-    let value = this.get("operation_amount");
-    return value!.toBigInt();
-  }
-
-  set operation_amount(value: BigInt) {
-    this.set("operation_amount", Value.fromBigInt(value));
-  }
-
-  get amount_delivered(): BigInt {
-    let value = this.get("amount_delivered");
-    return value!.toBigInt();
-  }
-
-  set amount_delivered(value: BigInt) {
-    this.set("amount_delivered", Value.fromBigInt(value));
-  }
-
-  get fee_deducted(): BigInt {
-    let value = this.get("fee_deducted");
-    return value!.toBigInt();
-  }
-
-  set fee_deducted(value: BigInt) {
-    this.set("fee_deducted", Value.fromBigInt(value));
-  }
-
-  get payment_method(): BigInt {
-    let value = this.get("payment_method");
-    return value!.toBigInt();
-  }
-
-  set payment_method(value: BigInt) {
-    this.set("payment_method", Value.fromBigInt(value));
-  }
-
-  get fiat_method(): BigInt {
-    let value = this.get("fiat_method");
-    return value!.toBigInt();
-  }
-
-  set fiat_method(value: BigInt) {
-    this.set("fiat_method", Value.fromBigInt(value));
-  }
-
-  get confirmation_owner_id(): i32 {
-    let value = this.get("confirmation_owner_id");
-    return value!.toI32();
-  }
-
-  set confirmation_owner_id(value: i32) {
-    this.set("confirmation_owner_id", Value.fromI32(value));
-  }
-
-  get confirmation_signer_id(): i32 {
-    let value = this.get("confirmation_signer_id");
-    return value!.toI32();
-  }
-
-  set confirmation_signer_id(value: i32) {
-    this.set("confirmation_signer_id", Value.fromI32(value));
-  }
-
-  get confirmation_current(): i32 {
-    let value = this.get("confirmation_current");
-    return value!.toI32();
-  }
-
-  set confirmation_current(value: i32) {
-    this.set("confirmation_current", Value.fromI32(value));
-  }
-
-  get time(): BigInt {
-    let value = this.get("time");
-    return value!.toBigInt();
-  }
-
-  set time(value: BigInt) {
-    this.set("time", Value.fromBigInt(value));
-  }
-
-  get datetime(): string {
-    let value = this.get("datetime");
-    return value!.toString();
-  }
-
-  set datetime(value: string) {
-    this.set("datetime", Value.fromString(value));
-  }
-
-  get terms_conditions(): string {
-    let value = this.get("terms_conditions");
-    return value!.toString();
-  }
-
-  set terms_conditions(value: string) {
-    this.set("terms_conditions", Value.fromString(value));
-  }
-
-  get status(): i32 {
-    let value = this.get("status");
-    return value!.toI32();
-  }
-
-  set status(value: i32) {
-    this.set("status", Value.fromI32(value));
+  set votes(value: BigInt) {
+    this.set("votes", Value.fromBigInt(value));
   }
 }
 
-export class Ordersell extends Entity {
+export class Serie extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1008,205 +986,206 @@ export class Ordersell extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Ordersell entity without an ID");
+    assert(id != null, "Cannot save Serie entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Ordersell must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Serie must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("Ordersell", id.toString(), this);
+      store.set("Serie", id.toString(), this);
     }
   }
 
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot delete Ordersell entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Ordersell must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Ordersell", id.toString());
-    }
+  static loadInBlock(id: string): Serie | null {
+    return changetype<Serie | null>(store.get_in_block("Serie", id));
   }
 
-  static load(id: string): Ordersell | null {
-    return changetype<Ordersell | null>(store.get("Ordersell", id));
+  static load(id: string): Serie | null {
+    return changetype<Serie | null>(store.get("Serie", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
 
-  get offer_id(): BigInt {
-    let value = this.get("offer_id");
-    return value!.toBigInt();
+  get title(): string {
+    let value = this.get("title");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set offer_id(value: BigInt) {
-    this.set("offer_id", Value.fromBigInt(value));
+  set title(value: string) {
+    this.set("title", Value.fromString(value));
   }
 
-  get order_id(): BigInt {
-    let value = this.get("order_id");
-    return value!.toBigInt();
+  get description(): string | null {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set order_id(value: BigInt) {
-    this.set("order_id", Value.fromBigInt(value));
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
   }
 
-  get owner_id(): string {
-    let value = this.get("owner_id");
-    return value!.toString();
+  get media(): string {
+    let value = this.get("media");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set owner_id(value: string) {
-    this.set("owner_id", Value.fromString(value));
+  set media(value: string) {
+    this.set("media", Value.fromString(value));
   }
 
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
+  get extra(): string | null {
+    let value = this.get("extra");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
+  set extra(value: string | null) {
+    if (!value) {
+      this.unset("extra");
+    } else {
+      this.set("extra", Value.fromString(<string>value));
+    }
   }
 
-  get signer_id(): string {
-    let value = this.get("signer_id");
-    return value!.toString();
+  get reference(): string {
+    let value = this.get("reference");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set signer_id(value: string) {
-    this.set("signer_id", Value.fromString(value));
+  set reference(value: string) {
+    this.set("reference", Value.fromString(value));
   }
 
-  get exchange_rate(): string {
-    let value = this.get("exchange_rate");
-    return value!.toString();
+  get creator_id(): string {
+    let value = this.get("creator_id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set exchange_rate(value: string) {
-    this.set("exchange_rate", Value.fromString(value));
+  set creator_id(value: string) {
+    this.set("creator_id", Value.fromString(value));
   }
 
-  get operation_amount(): BigInt {
-    let value = this.get("operation_amount");
-    return value!.toBigInt();
+  get price(): BigDecimal | null {
+    let value = this.get("price");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
   }
 
-  set operation_amount(value: BigInt) {
-    this.set("operation_amount", Value.fromBigInt(value));
+  set price(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("price");
+    } else {
+      this.set("price", Value.fromBigDecimal(<BigDecimal>value));
+    }
   }
 
-  get amount_delivered(): BigInt {
-    let value = this.get("amount_delivered");
-    return value!.toBigInt();
+  get price_near(): BigDecimal | null {
+    let value = this.get("price_near");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigDecimal();
+    }
   }
 
-  set amount_delivered(value: BigInt) {
-    this.set("amount_delivered", Value.fromBigInt(value));
+  set price_near(value: BigDecimal | null) {
+    if (!value) {
+      this.unset("price_near");
+    } else {
+      this.set("price_near", Value.fromBigDecimal(<BigDecimal>value));
+    }
   }
 
-  get fee_deducted(): BigInt {
-    let value = this.get("fee_deducted");
-    return value!.toBigInt();
+  get supply(): BigInt {
+    let value = this.get("supply");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set fee_deducted(value: BigInt) {
-    this.set("fee_deducted", Value.fromBigInt(value));
+  set supply(value: BigInt) {
+    this.set("supply", Value.fromBigInt(value));
   }
 
-  get payment_method(): BigInt {
-    let value = this.get("payment_method");
-    return value!.toBigInt();
+  get copies(): BigInt | null {
+    let value = this.get("copies");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set payment_method(value: BigInt) {
-    this.set("payment_method", Value.fromBigInt(value));
+  set copies(value: BigInt | null) {
+    if (!value) {
+      this.unset("copies");
+    } else {
+      this.set("copies", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get fiat_method(): BigInt {
-    let value = this.get("fiat_method");
-    return value!.toBigInt();
+  get fecha(): BigInt {
+    let value = this.get("fecha");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set fiat_method(value: BigInt) {
-    this.set("fiat_method", Value.fromBigInt(value));
+  set fecha(value: BigInt) {
+    this.set("fecha", Value.fromBigInt(value));
   }
 
-  get confirmation_owner_id(): i32 {
-    let value = this.get("confirmation_owner_id");
-    return value!.toI32();
-  }
-
-  set confirmation_owner_id(value: i32) {
-    this.set("confirmation_owner_id", Value.fromI32(value));
-  }
-
-  get confirmation_signer_id(): i32 {
-    let value = this.get("confirmation_signer_id");
-    return value!.toI32();
-  }
-
-  set confirmation_signer_id(value: i32) {
-    this.set("confirmation_signer_id", Value.fromI32(value));
-  }
-
-  get confirmation_current(): i32 {
-    let value = this.get("confirmation_current");
-    return value!.toI32();
-  }
-
-  set confirmation_current(value: i32) {
-    this.set("confirmation_current", Value.fromI32(value));
-  }
-
-  get time(): BigInt {
-    let value = this.get("time");
-    return value!.toBigInt();
-  }
-
-  set time(value: BigInt) {
-    this.set("time", Value.fromBigInt(value));
-  }
-
-  get datetime(): string {
-    let value = this.get("datetime");
-    return value!.toString();
-  }
-
-  set datetime(value: string) {
-    this.set("datetime", Value.fromString(value));
-  }
-
-  get terms_conditions(): string {
-    let value = this.get("terms_conditions");
-    return value!.toString();
-  }
-
-  set terms_conditions(value: string) {
-    this.set("terms_conditions", Value.fromString(value));
-  }
-
-  get status(): i32 {
-    let value = this.get("status");
-    return value!.toI32();
-  }
-
-  set status(value: i32) {
-    this.set("status", Value.fromI32(value));
+  get tokens(): NftLoader {
+    return new NftLoader("Serie", this.get("id")!.toString(), "tokens");
   }
 }
 
-export class Orderhistorybuy extends Entity {
+export class Nft extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1214,408 +1193,189 @@ export class Orderhistorybuy extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Orderhistorybuy entity without an ID");
+    assert(id != null, "Cannot save Nft entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Orderhistorybuy must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Nft must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("Orderhistorybuy", id.toString(), this);
+      store.set("Nft", id.toString(), this);
     }
   }
 
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot delete Orderhistorybuy entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Orderhistorybuy must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Orderhistorybuy", id.toString());
-    }
+  static loadInBlock(id: string): Nft | null {
+    return changetype<Nft | null>(store.get_in_block("Nft", id));
   }
 
-  static load(id: string): Orderhistorybuy | null {
-    return changetype<Orderhistorybuy | null>(store.get("Orderhistorybuy", id));
+  static load(id: string): Nft | null {
+    return changetype<Nft | null>(store.get("Nft", id));
   }
 
   get id(): string {
     let value = this.get("id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
 
-  get offer_id(): BigInt {
-    let value = this.get("offer_id");
-    return value!.toBigInt();
+  get serie_id(): string {
+    let value = this.get("serie_id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set offer_id(value: BigInt) {
-    this.set("offer_id", Value.fromBigInt(value));
-  }
-
-  get order_id(): BigInt {
-    let value = this.get("order_id");
-    return value!.toBigInt();
-  }
-
-  set order_id(value: BigInt) {
-    this.set("order_id", Value.fromBigInt(value));
+  set serie_id(value: string) {
+    this.set("serie_id", Value.fromString(value));
   }
 
   get owner_id(): string {
     let value = this.get("owner_id");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
   set owner_id(value: string) {
     this.set("owner_id", Value.fromString(value));
   }
 
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
+  get fecha(): BigInt {
+    let value = this.get("fecha");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
+  set fecha(value: BigInt) {
+    this.set("fecha", Value.fromBigInt(value));
   }
 
-  get signer_id(): string {
-    let value = this.get("signer_id");
-    return value!.toString();
+  get is_visible(): boolean {
+    let value = this.get("is_visible");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
   }
 
-  set signer_id(value: string) {
-    this.set("signer_id", Value.fromString(value));
+  set is_visible(value: boolean) {
+    this.set("is_visible", Value.fromBoolean(value));
   }
 
-  get exchange_rate(): string {
-    let value = this.get("exchange_rate");
-    return value!.toString();
+  get metadata(): string {
+    let value = this.get("metadata");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
   }
 
-  set exchange_rate(value: string) {
-    this.set("exchange_rate", Value.fromString(value));
-  }
-
-  get operation_amount(): BigInt {
-    let value = this.get("operation_amount");
-    return value!.toBigInt();
-  }
-
-  set operation_amount(value: BigInt) {
-    this.set("operation_amount", Value.fromBigInt(value));
-  }
-
-  get amount_delivered(): BigInt {
-    let value = this.get("amount_delivered");
-    return value!.toBigInt();
-  }
-
-  set amount_delivered(value: BigInt) {
-    this.set("amount_delivered", Value.fromBigInt(value));
-  }
-
-  get fee_deducted(): BigInt {
-    let value = this.get("fee_deducted");
-    return value!.toBigInt();
-  }
-
-  set fee_deducted(value: BigInt) {
-    this.set("fee_deducted", Value.fromBigInt(value));
-  }
-
-  get payment_method(): BigInt {
-    let value = this.get("payment_method");
-    return value!.toBigInt();
-  }
-
-  set payment_method(value: BigInt) {
-    this.set("payment_method", Value.fromBigInt(value));
-  }
-
-  get fiat_method(): BigInt {
-    let value = this.get("fiat_method");
-    return value!.toBigInt();
-  }
-
-  set fiat_method(value: BigInt) {
-    this.set("fiat_method", Value.fromBigInt(value));
-  }
-
-  get confirmation_owner_id(): i32 {
-    let value = this.get("confirmation_owner_id");
-    return value!.toI32();
-  }
-
-  set confirmation_owner_id(value: i32) {
-    this.set("confirmation_owner_id", Value.fromI32(value));
-  }
-
-  get confirmation_signer_id(): i32 {
-    let value = this.get("confirmation_signer_id");
-    return value!.toI32();
-  }
-
-  set confirmation_signer_id(value: i32) {
-    this.set("confirmation_signer_id", Value.fromI32(value));
-  }
-
-  get confirmation_current(): i32 {
-    let value = this.get("confirmation_current");
-    return value!.toI32();
-  }
-
-  set confirmation_current(value: i32) {
-    this.set("confirmation_current", Value.fromI32(value));
-  }
-
-  get time(): BigInt {
-    let value = this.get("time");
-    return value!.toBigInt();
-  }
-
-  set time(value: BigInt) {
-    this.set("time", Value.fromBigInt(value));
-  }
-
-  get datetime(): string {
-    let value = this.get("datetime");
-    return value!.toString();
-  }
-
-  set datetime(value: string) {
-    this.set("datetime", Value.fromString(value));
-  }
-
-  get terms_conditions(): string {
-    let value = this.get("terms_conditions");
-    return value!.toString();
-  }
-
-  set terms_conditions(value: string) {
-    this.set("terms_conditions", Value.fromString(value));
-  }
-
-  get status(): i32 {
-    let value = this.get("status");
-    return value!.toI32();
-  }
-
-  set status(value: i32) {
-    this.set("status", Value.fromI32(value));
+  set metadata(value: string) {
+    this.set("metadata", Value.fromString(value));
   }
 }
 
-export class Orderhistorysell extends Entity {
-  constructor(id: string) {
+export class VoteLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
     super();
-    this.set("id", Value.fromString(id));
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
   }
 
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Orderhistorysell entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Orderhistorysell must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("Orderhistorysell", id.toString(), this);
-    }
+  load(): Vote[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Vote[]>(value);
+  }
+}
+
+export class DelegatorLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
   }
 
-  delete(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot delete Orderhistorysell entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Orderhistorysell must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.remove("Orderhistorysell", id.toString());
-    }
+  load(): Delegator[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Delegator[]>(value);
+  }
+}
+
+export class DelegationhistLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
   }
 
-  static load(id: string): Orderhistorysell | null {
-    return changetype<Orderhistorysell | null>(
-      store.get("Orderhistorysell", id)
-    );
+  load(): Delegationhist[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Delegationhist[]>(value);
+  }
+}
+
+export class OwnerLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
   }
 
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
+  load(): Owner[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Owner[]>(value);
+  }
+}
+
+export class NftLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
   }
 
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get offer_id(): BigInt {
-    let value = this.get("offer_id");
-    return value!.toBigInt();
-  }
-
-  set offer_id(value: BigInt) {
-    this.set("offer_id", Value.fromBigInt(value));
-  }
-
-  get order_id(): BigInt {
-    let value = this.get("order_id");
-    return value!.toBigInt();
-  }
-
-  set order_id(value: BigInt) {
-    this.set("order_id", Value.fromBigInt(value));
-  }
-
-  get owner_id(): string {
-    let value = this.get("owner_id");
-    return value!.toString();
-  }
-
-  set owner_id(value: string) {
-    this.set("owner_id", Value.fromString(value));
-  }
-
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
-  }
-
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
-  }
-
-  get signer_id(): string {
-    let value = this.get("signer_id");
-    return value!.toString();
-  }
-
-  set signer_id(value: string) {
-    this.set("signer_id", Value.fromString(value));
-  }
-
-  get exchange_rate(): string {
-    let value = this.get("exchange_rate");
-    return value!.toString();
-  }
-
-  set exchange_rate(value: string) {
-    this.set("exchange_rate", Value.fromString(value));
-  }
-
-  get operation_amount(): BigInt {
-    let value = this.get("operation_amount");
-    return value!.toBigInt();
-  }
-
-  set operation_amount(value: BigInt) {
-    this.set("operation_amount", Value.fromBigInt(value));
-  }
-
-  get amount_delivered(): BigInt {
-    let value = this.get("amount_delivered");
-    return value!.toBigInt();
-  }
-
-  set amount_delivered(value: BigInt) {
-    this.set("amount_delivered", Value.fromBigInt(value));
-  }
-
-  get fee_deducted(): BigInt {
-    let value = this.get("fee_deducted");
-    return value!.toBigInt();
-  }
-
-  set fee_deducted(value: BigInt) {
-    this.set("fee_deducted", Value.fromBigInt(value));
-  }
-
-  get payment_method(): BigInt {
-    let value = this.get("payment_method");
-    return value!.toBigInt();
-  }
-
-  set payment_method(value: BigInt) {
-    this.set("payment_method", Value.fromBigInt(value));
-  }
-
-  get fiat_method(): BigInt {
-    let value = this.get("fiat_method");
-    return value!.toBigInt();
-  }
-
-  set fiat_method(value: BigInt) {
-    this.set("fiat_method", Value.fromBigInt(value));
-  }
-
-  get confirmation_owner_id(): i32 {
-    let value = this.get("confirmation_owner_id");
-    return value!.toI32();
-  }
-
-  set confirmation_owner_id(value: i32) {
-    this.set("confirmation_owner_id", Value.fromI32(value));
-  }
-
-  get confirmation_signer_id(): i32 {
-    let value = this.get("confirmation_signer_id");
-    return value!.toI32();
-  }
-
-  set confirmation_signer_id(value: i32) {
-    this.set("confirmation_signer_id", Value.fromI32(value));
-  }
-
-  get confirmation_current(): i32 {
-    let value = this.get("confirmation_current");
-    return value!.toI32();
-  }
-
-  set confirmation_current(value: i32) {
-    this.set("confirmation_current", Value.fromI32(value));
-  }
-
-  get time(): BigInt {
-    let value = this.get("time");
-    return value!.toBigInt();
-  }
-
-  set time(value: BigInt) {
-    this.set("time", Value.fromBigInt(value));
-  }
-
-  get datetime(): string {
-    let value = this.get("datetime");
-    return value!.toString();
-  }
-
-  set datetime(value: string) {
-    this.set("datetime", Value.fromString(value));
-  }
-
-  get terms_conditions(): string {
-    let value = this.get("terms_conditions");
-    return value!.toString();
-  }
-
-  set terms_conditions(value: string) {
-    this.set("terms_conditions", Value.fromString(value));
-  }
-
-  get status(): i32 {
-    let value = this.get("status");
-    return value!.toI32();
-  }
-
-  set status(value: i32) {
-    this.set("status", Value.fromI32(value));
+  load(): Nft[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Nft[]>(value);
   }
 }
